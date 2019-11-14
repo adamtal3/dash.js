@@ -36,7 +36,7 @@ import FactoryMaker from '../core/FactoryMaker';
 import TextController from './text/TextController';
 import Errors from '../core/errors/Errors';
 
-const MAX_ALLOWED_DISCONTINUITY = 0.1; // 100 milliseconds
+const MAX_ALLOWED_DISCONTINUITY = 0.99; // 990 milliseconds
 
 /**
  * @class SourceBufferSink
