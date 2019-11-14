@@ -27,7 +27,20 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @classdesc a RepresentationBaseValuesMap type for input to objectiron
- */import MapNode from'./MapNode';import DashConstants from'../../constants/DashConstants';class RepresentationBaseValuesMap extends MapNode{constructor(){const commonProperties=[DashConstants.PROFILES,DashConstants.WIDTH,DashConstants.HEIGHT,DashConstants.SAR,DashConstants.FRAMERATE,DashConstants.AUDIO_SAMPLING_RATE,DashConstants.MIME_TYPE,DashConstants.SEGMENT_PROFILES,DashConstants.CODECS,DashConstants.MAXIMUM_SAP_PERIOD,DashConstants.START_WITH_SAP,DashConstants.MAX_PLAYOUT_RATE,DashConstants.CODING_DEPENDENCY,DashConstants.SCAN_TYPE,DashConstants.FRAME_PACKING,DashConstants.AUDIO_CHANNEL_CONFIGURATION,DashConstants.CONTENT_PROTECTION,DashConstants.ESSENTIAL_PROPERTY,DashConstants.SUPPLEMENTAL_PROPERTY,DashConstants.INBAND_EVENT_STREAM];super(DashConstants.ADAPTATION_SET,commonProperties,[new MapNode(DashConstants.REPRESENTATION,commonProperties,[new MapNode(DashConstants.SUB_REPRESENTATION,commonProperties)])]);}}export default RepresentationBaseValuesMap;
+ */
+import MapNode from './MapNode';
+import DashConstants from '../../constants/DashConstants';
+
+class RepresentationBaseValuesMap extends MapNode {
+    constructor() {
+        const commonProperties = [DashConstants.PROFILES, DashConstants.WIDTH, DashConstants.HEIGHT, DashConstants.SAR, DashConstants.FRAMERATE, DashConstants.AUDIO_SAMPLING_RATE, DashConstants.MIME_TYPE, DashConstants.SEGMENT_PROFILES, DashConstants.CODECS, DashConstants.MAXIMUM_SAP_PERIOD, DashConstants.START_WITH_SAP, DashConstants.MAX_PLAYOUT_RATE, DashConstants.CODING_DEPENDENCY, DashConstants.SCAN_TYPE, DashConstants.FRAME_PACKING, DashConstants.AUDIO_CHANNEL_CONFIGURATION, DashConstants.CONTENT_PROTECTION, DashConstants.ESSENTIAL_PROPERTY, DashConstants.SUPPLEMENTAL_PROPERTY, DashConstants.INBAND_EVENT_STREAM];
+
+        super(DashConstants.ADAPTATION_SET, commonProperties, [new MapNode(DashConstants.REPRESENTATION, commonProperties, [new MapNode(DashConstants.SUB_REPRESENTATION, commonProperties)])]);
+    }
+}
+
+export default RepresentationBaseValuesMap;
 //# sourceMappingURL=RepresentationBaseValuesMap.js.map

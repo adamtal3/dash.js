@@ -27,8 +27,22 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class Period{constructor(){this.id=null;this.index=-1;this.duration=NaN;this.start=NaN;this.mpd=null;}}Period.DEFAULT_ID='defaultId';export default Period;
+ */
+class Period {
+  constructor() {
+    this.id = null;
+    this.index = -1;
+    this.duration = NaN;
+    this.start = NaN;
+    this.mpd = null;
+  }
+}
+
+Period.DEFAULT_ID = 'defaultId';
+
+export default Period;
 //# sourceMappingURL=Period.js.map

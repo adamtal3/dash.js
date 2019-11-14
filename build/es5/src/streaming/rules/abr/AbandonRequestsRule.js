@@ -27,6 +27,129 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import SwitchRequest from'../SwitchRequest';import FactoryMaker from'../../../core/FactoryMaker';import Debug from'../../../core/Debug';function AbandonRequestsRule(config){config=config||{};const ABANDON_MULTIPLIER=1.8;const GRACE_TIME_THRESHOLD=500;const MIN_LENGTH_TO_AVERAGE=5;const context=this.context;const mediaPlayerModel=config.mediaPlayerModel;const metricsModel=config.metricsModel;const dashMetrics=config.dashMetrics;let instance,logger,fragmentDict,abandonDict,throughputArray;function setup(){logger=Debug(context).getInstance().getLogger(instance);reset();}function setFragmentRequestDict(type,id){fragmentDict[type]=fragmentDict[type]||{};fragmentDict[type][id]=fragmentDict[type][id]||{};}function storeLastRequestThroughputByType(type,throughput){throughputArray[type]=throughputArray[type]||[];throughputArray[type].push(throughput);}function shouldAbandon(rulesContext){const switchRequest=SwitchRequest(context).create(SwitchRequest.NO_CHANGE,{name:AbandonRequestsRule.__dashjs_factory_name});if(!rulesContext||!rulesContext.hasOwnProperty('getMediaInfo')||!rulesContext.hasOwnProperty('getMediaType')||!rulesContext.hasOwnProperty('getCurrentRequest')||!rulesContext.hasOwnProperty('getRepresentationInfo')||!rulesContext.hasOwnProperty('getAbrController')){return switchRequest;}const mediaInfo=rulesContext.getMediaInfo();const mediaType=rulesContext.getMediaType();const req=rulesContext.getCurrentRequest();if(!isNaN(req.index)){setFragmentRequestDict(mediaType,req.index);const stableBufferTime=mediaPlayerModel.getStableBufferTime();const bufferLevel=dashMetrics.getCurrentBufferLevel(metricsModel.getReadOnlyMetricsFor(mediaType));if(bufferLevel>stableBufferTime){return switchRequest;}const fragmentInfo=fragmentDict[mediaType][req.index];if(fragmentInfo===null||req.firstByteDate===null||abandonDict.hasOwnProperty(fragmentInfo.id)){return switchRequest;}//setup some init info based on first progress event
-if(fragmentInfo.firstByteTime===undefined){throughputArray[mediaType]=[];fragmentInfo.firstByteTime=req.firstByteDate.getTime();fragmentInfo.segmentDuration=req.duration;fragmentInfo.bytesTotal=req.bytesTotal;fragmentInfo.id=req.index;}fragmentInfo.bytesLoaded=req.bytesLoaded;fragmentInfo.elapsedTime=new Date().getTime()-fragmentInfo.firstByteTime;if(fragmentInfo.bytesLoaded>0&&fragmentInfo.elapsedTime>0){storeLastRequestThroughputByType(mediaType,Math.round(fragmentInfo.bytesLoaded*8/fragmentInfo.elapsedTime));}if(throughputArray[mediaType].length>=MIN_LENGTH_TO_AVERAGE&&fragmentInfo.elapsedTime>GRACE_TIME_THRESHOLD&&fragmentInfo.bytesLoaded<fragmentInfo.bytesTotal){const totalSampledValue=throughputArray[mediaType].reduce((a,b)=>a+b,0);fragmentInfo.measuredBandwidthInKbps=Math.round(totalSampledValue/throughputArray[mediaType].length);fragmentInfo.estimatedTimeOfDownload=+(fragmentInfo.bytesTotal*8/fragmentInfo.measuredBandwidthInKbps/1000).toFixed(2);if(fragmentInfo.estimatedTimeOfDownload<fragmentInfo.segmentDuration*ABANDON_MULTIPLIER||rulesContext.getRepresentationInfo().quality===0){return switchRequest;}else if(!abandonDict.hasOwnProperty(fragmentInfo.id)){const abrController=rulesContext.getAbrController();const bytesRemaining=fragmentInfo.bytesTotal-fragmentInfo.bytesLoaded;const bitrateList=abrController.getBitrateList(mediaInfo);const newQuality=abrController.getQualityForBitrate(mediaInfo,fragmentInfo.measuredBandwidthInKbps*mediaPlayerModel.getBandwidthSafetyFactor());const estimateOtherBytesTotal=fragmentInfo.bytesTotal*bitrateList[newQuality].bitrate/bitrateList[abrController.getQualityFor(mediaType,mediaInfo.streamInfo)].bitrate;if(bytesRemaining>estimateOtherBytesTotal){switchRequest.quality=newQuality;switchRequest.reason.throughput=fragmentInfo.measuredBandwidthInKbps;switchRequest.reason.fragmentID=fragmentInfo.id;abandonDict[fragmentInfo.id]=fragmentInfo;logger.debug('( ',mediaType,'frag id',fragmentInfo.id,') is asking to abandon and switch to quality to ',newQuality,' measured bandwidth was',fragmentInfo.measuredBandwidthInKbps);delete fragmentDict[mediaType][fragmentInfo.id];}}}else if(fragmentInfo.bytesLoaded===fragmentInfo.bytesTotal){delete fragmentDict[mediaType][fragmentInfo.id];}}return switchRequest;}function reset(){fragmentDict={};abandonDict={};throughputArray=[];}instance={shouldAbandon:shouldAbandon,reset:reset};setup();return instance;}AbandonRequestsRule.__dashjs_factory_name='AbandonRequestsRule';export default FactoryMaker.getClassFactory(AbandonRequestsRule);
+ */
+import SwitchRequest from '../SwitchRequest';
+import FactoryMaker from '../../../core/FactoryMaker';
+import Debug from '../../../core/Debug';
+
+function AbandonRequestsRule(config) {
+
+    config = config || {};
+    const ABANDON_MULTIPLIER = 1.8;
+    const GRACE_TIME_THRESHOLD = 500;
+    const MIN_LENGTH_TO_AVERAGE = 5;
+
+    const context = this.context;
+    const mediaPlayerModel = config.mediaPlayerModel;
+    const metricsModel = config.metricsModel;
+    const dashMetrics = config.dashMetrics;
+
+    let instance, logger, fragmentDict, abandonDict, throughputArray;
+
+    function setup() {
+        logger = Debug(context).getInstance().getLogger(instance);
+        reset();
+    }
+
+    function setFragmentRequestDict(type, id) {
+        fragmentDict[type] = fragmentDict[type] || {};
+        fragmentDict[type][id] = fragmentDict[type][id] || {};
+    }
+
+    function storeLastRequestThroughputByType(type, throughput) {
+        throughputArray[type] = throughputArray[type] || [];
+        throughputArray[type].push(throughput);
+    }
+
+    function shouldAbandon(rulesContext) {
+        const switchRequest = SwitchRequest(context).create(SwitchRequest.NO_CHANGE, { name: AbandonRequestsRule.__dashjs_factory_name });
+
+        if (!rulesContext || !rulesContext.hasOwnProperty('getMediaInfo') || !rulesContext.hasOwnProperty('getMediaType') || !rulesContext.hasOwnProperty('getCurrentRequest') || !rulesContext.hasOwnProperty('getRepresentationInfo') || !rulesContext.hasOwnProperty('getAbrController')) {
+            return switchRequest;
+        }
+
+        const mediaInfo = rulesContext.getMediaInfo();
+        const mediaType = rulesContext.getMediaType();
+        const req = rulesContext.getCurrentRequest();
+
+        if (!isNaN(req.index)) {
+            setFragmentRequestDict(mediaType, req.index);
+
+            const stableBufferTime = mediaPlayerModel.getStableBufferTime();
+            const bufferLevel = dashMetrics.getCurrentBufferLevel(metricsModel.getReadOnlyMetricsFor(mediaType));
+            if (bufferLevel > stableBufferTime) {
+                return switchRequest;
+            }
+
+            const fragmentInfo = fragmentDict[mediaType][req.index];
+            if (fragmentInfo === null || req.firstByteDate === null || abandonDict.hasOwnProperty(fragmentInfo.id)) {
+                return switchRequest;
+            }
+
+            //setup some init info based on first progress event
+            if (fragmentInfo.firstByteTime === undefined) {
+                throughputArray[mediaType] = [];
+                fragmentInfo.firstByteTime = req.firstByteDate.getTime();
+                fragmentInfo.segmentDuration = req.duration;
+                fragmentInfo.bytesTotal = req.bytesTotal;
+                fragmentInfo.id = req.index;
+            }
+            fragmentInfo.bytesLoaded = req.bytesLoaded;
+            fragmentInfo.elapsedTime = new Date().getTime() - fragmentInfo.firstByteTime;
+
+            if (fragmentInfo.bytesLoaded > 0 && fragmentInfo.elapsedTime > 0) {
+                storeLastRequestThroughputByType(mediaType, Math.round(fragmentInfo.bytesLoaded * 8 / fragmentInfo.elapsedTime));
+            }
+
+            if (throughputArray[mediaType].length >= MIN_LENGTH_TO_AVERAGE && fragmentInfo.elapsedTime > GRACE_TIME_THRESHOLD && fragmentInfo.bytesLoaded < fragmentInfo.bytesTotal) {
+
+                const totalSampledValue = throughputArray[mediaType].reduce((a, b) => a + b, 0);
+                fragmentInfo.measuredBandwidthInKbps = Math.round(totalSampledValue / throughputArray[mediaType].length);
+                fragmentInfo.estimatedTimeOfDownload = +(fragmentInfo.bytesTotal * 8 / fragmentInfo.measuredBandwidthInKbps / 1000).toFixed(2);
+
+                if (fragmentInfo.estimatedTimeOfDownload < fragmentInfo.segmentDuration * ABANDON_MULTIPLIER || rulesContext.getRepresentationInfo().quality === 0) {
+                    return switchRequest;
+                } else if (!abandonDict.hasOwnProperty(fragmentInfo.id)) {
+
+                    const abrController = rulesContext.getAbrController();
+                    const bytesRemaining = fragmentInfo.bytesTotal - fragmentInfo.bytesLoaded;
+                    const bitrateList = abrController.getBitrateList(mediaInfo);
+                    const newQuality = abrController.getQualityForBitrate(mediaInfo, fragmentInfo.measuredBandwidthInKbps * mediaPlayerModel.getBandwidthSafetyFactor());
+                    const estimateOtherBytesTotal = fragmentInfo.bytesTotal * bitrateList[newQuality].bitrate / bitrateList[abrController.getQualityFor(mediaType, mediaInfo.streamInfo)].bitrate;
+
+                    if (bytesRemaining > estimateOtherBytesTotal) {
+                        switchRequest.quality = newQuality;
+                        switchRequest.reason.throughput = fragmentInfo.measuredBandwidthInKbps;
+                        switchRequest.reason.fragmentID = fragmentInfo.id;
+                        abandonDict[fragmentInfo.id] = fragmentInfo;
+                        logger.debug('( ', mediaType, 'frag id', fragmentInfo.id, ') is asking to abandon and switch to quality to ', newQuality, ' measured bandwidth was', fragmentInfo.measuredBandwidthInKbps);
+                        delete fragmentDict[mediaType][fragmentInfo.id];
+                    }
+                }
+            } else if (fragmentInfo.bytesLoaded === fragmentInfo.bytesTotal) {
+                delete fragmentDict[mediaType][fragmentInfo.id];
+            }
+        }
+
+        return switchRequest;
+    }
+
+    function reset() {
+        fragmentDict = {};
+        abandonDict = {};
+        throughputArray = [];
+    }
+
+    instance = {
+        shouldAbandon: shouldAbandon,
+        reset: reset
+    };
+
+    setup();
+
+    return instance;
+}
+
+AbandonRequestsRule.__dashjs_factory_name = 'AbandonRequestsRule';
+export default FactoryMaker.getClassFactory(AbandonRequestsRule);
 //# sourceMappingURL=AbandonRequestsRule.js.map

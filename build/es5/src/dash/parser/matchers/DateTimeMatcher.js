@@ -27,12 +27,40 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @classdesc matches and converts xs:datetime to Date
- */import BaseMatcher from'./BaseMatcher';const SECONDS_IN_MIN=60;const MINUTES_IN_HOUR=60;const MILLISECONDS_IN_SECONDS=1000;const datetimeRegex=/^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2})(?::([0-9]*)(\.[0-9]*)?)?(?:([+-])([0-9]{2})(?::?)([0-9]{2}))?/;class DateTimeMatcher extends BaseMatcher{constructor(){super(attr=>datetimeRegex.test(attr.value),str=>{const match=datetimeRegex.exec(str);let utcDate;// If the string does not contain a timezone offset different browsers can interpret it either
-// as UTC or as a local time so we have to parse the string manually to normalize the given date value for
-// all browsers
-utcDate=Date.UTC(parseInt(match[1],10),parseInt(match[2],10)-1,// months start from zero
-parseInt(match[3],10),parseInt(match[4],10),parseInt(match[5],10),match[6]&&parseInt(match[6],10)||0,match[7]&&parseFloat(match[7])*MILLISECONDS_IN_SECONDS||0);// If the date has timezone offset take it into account as well
-if(match[9]&&match[10]){const timezoneOffset=parseInt(match[9],10)*MINUTES_IN_HOUR+parseInt(match[10],10);utcDate+=(match[8]==='+'?-1:+1)*timezoneOffset*SECONDS_IN_MIN*MILLISECONDS_IN_SECONDS;}return new Date(utcDate);});}}export default DateTimeMatcher;
+ */
+import BaseMatcher from './BaseMatcher';
+
+const SECONDS_IN_MIN = 60;
+const MINUTES_IN_HOUR = 60;
+const MILLISECONDS_IN_SECONDS = 1000;
+
+const datetimeRegex = /^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2})(?::([0-9]*)(\.[0-9]*)?)?(?:([+-])([0-9]{2})(?::?)([0-9]{2}))?/;
+
+class DateTimeMatcher extends BaseMatcher {
+    constructor() {
+        super(attr => datetimeRegex.test(attr.value), str => {
+            const match = datetimeRegex.exec(str);
+            let utcDate;
+
+            // If the string does not contain a timezone offset different browsers can interpret it either
+            // as UTC or as a local time so we have to parse the string manually to normalize the given date value for
+            // all browsers
+            utcDate = Date.UTC(parseInt(match[1], 10), parseInt(match[2], 10) - 1, // months start from zero
+            parseInt(match[3], 10), parseInt(match[4], 10), parseInt(match[5], 10), match[6] && parseInt(match[6], 10) || 0, match[7] && parseFloat(match[7]) * MILLISECONDS_IN_SECONDS || 0);
+
+            // If the date has timezone offset take it into account as well
+            if (match[9] && match[10]) {
+                const timezoneOffset = parseInt(match[9], 10) * MINUTES_IN_HOUR + parseInt(match[10], 10);
+                utcDate += (match[8] === '+' ? -1 : +1) * timezoneOffset * SECONDS_IN_MIN * MILLISECONDS_IN_SECONDS;
+            }
+
+            return new Date(utcDate);
+        });
+    }
+}
+
+export default DateTimeMatcher;
 //# sourceMappingURL=DateTimeMatcher.js.map

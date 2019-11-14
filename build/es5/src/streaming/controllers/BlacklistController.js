@@ -27,5 +27,63 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import FactoryMaker from'../../core/FactoryMaker';import EventBus from'../../core/EventBus';function BlackListController(config){config=config||{};let blacklist=[];const eventBus=EventBus(this.context).getInstance();const updateEventName=config.updateEventName;const addBlacklistEventName=config.addBlacklistEventName;function contains(query){if(!blacklist.length||!query||!query.length){return false;}return blacklist.indexOf(query)!==-1;}function add(entry){if(blacklist.indexOf(entry)!==-1){return;}blacklist.push(entry);eventBus.trigger(updateEventName,{entry:entry});}function onAddBlackList(e){add(e.entry);}function setup(){if(addBlacklistEventName){eventBus.on(addBlacklistEventName,onAddBlackList,this);}}function reset(){blacklist=[];}setup();return{add:add,contains:contains,reset:reset};}BlackListController.__dashjs_factory_name='BlackListController';export default FactoryMaker.getClassFactory(BlackListController);
+ */
+
+import FactoryMaker from '../../core/FactoryMaker';
+import EventBus from '../../core/EventBus';
+
+function BlackListController(config) {
+
+    config = config || {};
+    let blacklist = [];
+
+    const eventBus = EventBus(this.context).getInstance();
+    const updateEventName = config.updateEventName;
+    const addBlacklistEventName = config.addBlacklistEventName;
+
+    function contains(query) {
+        if (!blacklist.length || !query || !query.length) {
+            return false;
+        }
+
+        return blacklist.indexOf(query) !== -1;
+    }
+
+    function add(entry) {
+        if (blacklist.indexOf(entry) !== -1) {
+            return;
+        }
+
+        blacklist.push(entry);
+
+        eventBus.trigger(updateEventName, {
+            entry: entry
+        });
+    }
+
+    function onAddBlackList(e) {
+        add(e.entry);
+    }
+
+    function setup() {
+        if (addBlacklistEventName) {
+            eventBus.on(addBlacklistEventName, onAddBlackList, this);
+        }
+    }
+
+    function reset() {
+        blacklist = [];
+    }
+
+    setup();
+
+    return {
+        add: add,
+        contains: contains,
+        reset: reset
+    };
+}
+
+BlackListController.__dashjs_factory_name = 'BlackListController';
+export default FactoryMaker.getClassFactory(BlackListController);
 //# sourceMappingURL=BlacklistController.js.map

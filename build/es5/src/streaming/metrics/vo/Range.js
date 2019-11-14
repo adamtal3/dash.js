@@ -27,10 +27,22 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class Range{constructor(){// as defined in ISO23009-1
-this.starttime=0;this.duration=Infinity;// for internal use
-this._useWallClockTime=false;}}export default Range;
+ */
+class Range {
+  constructor() {
+
+    // as defined in ISO23009-1
+    this.starttime = 0;
+    this.duration = Infinity;
+
+    // for internal use
+    this._useWallClockTime = false;
+  }
+}
+
+export default Range;
 //# sourceMappingURL=Range.js.map

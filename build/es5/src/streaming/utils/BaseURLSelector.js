@@ -27,8 +27,114 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import Errors from'../../core/errors/Errors';import EventBus from'../../core/EventBus';import Events from'../../core/events/Events';import BlacklistController from'../controllers/BlacklistController';import DVBSelector from'./baseUrlResolution/DVBSelector';import BasicSelector from'./baseUrlResolution/BasicSelector';import FactoryMaker from'../../core/FactoryMaker';import DashJSError from'../vo/DashJSError';import Constants from'../constants/Constants';function BaseURLSelector(){const context=this.context;const eventBus=EventBus(context).getInstance();let dashManifestModel;let instance,serviceLocationBlacklistController,basicSelector,dvbSelector,selector;function setup(){serviceLocationBlacklistController=BlacklistController(context).create({updateEventName:Events.SERVICE_LOCATION_BLACKLIST_CHANGED,addBlacklistEventName:Events.SERVICE_LOCATION_BLACKLIST_ADD});basicSelector=BasicSelector(context).create({blacklistController:serviceLocationBlacklistController});dvbSelector=DVBSelector(context).create({blacklistController:serviceLocationBlacklistController});selector=basicSelector;}function setConfig(config){if(config.selector){selector=config.selector;}if(config.dashManifestModel){dashManifestModel=config.dashManifestModel;}}function checkConfig(){if(!dashManifestModel||!dashManifestModel.hasOwnProperty('getIsDVB')){throw new Error(Constants.MISSING_CONFIG_ERROR);}}function chooseSelectorFromManifest(manifest){checkConfig();if(dashManifestModel.getIsDVB(manifest)){selector=dvbSelector;}else{selector=basicSelector;}}function select(data){if(!data){return;}const baseUrls=data.baseUrls;const selectedIdx=data.selectedIdx;// Once a random selection has been carried out amongst a group of BaseURLs with the same
-// @priority attribute value, then that choice should be re-used if the selection needs to be made again
-// unless the blacklist has been modified or the available BaseURLs have changed.
-if(!isNaN(selectedIdx)){return baseUrls[selectedIdx];}let selectedBaseUrl=selector.select(baseUrls);if(!selectedBaseUrl){eventBus.trigger(Events.URL_RESOLUTION_FAILED,{error:new DashJSError(Errors.URL_RESOLUTION_FAILED_GENERIC_ERROR_CODE,Errors.URL_RESOLUTION_FAILED_GENERIC_ERROR_MESSAGE)});if(selector===basicSelector){reset();}return;}data.selectedIdx=baseUrls.indexOf(selectedBaseUrl);return selectedBaseUrl;}function reset(){serviceLocationBlacklistController.reset();}instance={chooseSelectorFromManifest:chooseSelectorFromManifest,select:select,reset:reset,setConfig:setConfig};setup();return instance;}BaseURLSelector.__dashjs_factory_name='BaseURLSelector';export default FactoryMaker.getClassFactory(BaseURLSelector);
+ */
+
+import Errors from '../../core/errors/Errors';
+import EventBus from '../../core/EventBus';
+import Events from '../../core/events/Events';
+import BlacklistController from '../controllers/BlacklistController';
+import DVBSelector from './baseUrlResolution/DVBSelector';
+import BasicSelector from './baseUrlResolution/BasicSelector';
+import FactoryMaker from '../../core/FactoryMaker';
+import DashJSError from '../vo/DashJSError';
+import Constants from '../constants/Constants';
+
+function BaseURLSelector() {
+
+    const context = this.context;
+    const eventBus = EventBus(context).getInstance();
+    let dashManifestModel;
+
+    let instance, serviceLocationBlacklistController, basicSelector, dvbSelector, selector;
+
+    function setup() {
+        serviceLocationBlacklistController = BlacklistController(context).create({
+            updateEventName: Events.SERVICE_LOCATION_BLACKLIST_CHANGED,
+            addBlacklistEventName: Events.SERVICE_LOCATION_BLACKLIST_ADD
+        });
+
+        basicSelector = BasicSelector(context).create({
+            blacklistController: serviceLocationBlacklistController
+        });
+
+        dvbSelector = DVBSelector(context).create({
+            blacklistController: serviceLocationBlacklistController
+        });
+
+        selector = basicSelector;
+    }
+
+    function setConfig(config) {
+        if (config.selector) {
+            selector = config.selector;
+        }
+        if (config.dashManifestModel) {
+            dashManifestModel = config.dashManifestModel;
+        }
+    }
+
+    function checkConfig() {
+        if (!dashManifestModel || !dashManifestModel.hasOwnProperty('getIsDVB')) {
+            throw new Error(Constants.MISSING_CONFIG_ERROR);
+        }
+    }
+
+    function chooseSelectorFromManifest(manifest) {
+        checkConfig();
+        if (dashManifestModel.getIsDVB(manifest)) {
+            selector = dvbSelector;
+        } else {
+            selector = basicSelector;
+        }
+    }
+
+    function select(data) {
+        if (!data) {
+            return;
+        }
+        const baseUrls = data.baseUrls;
+        const selectedIdx = data.selectedIdx;
+
+        // Once a random selection has been carried out amongst a group of BaseURLs with the same
+        // @priority attribute value, then that choice should be re-used if the selection needs to be made again
+        // unless the blacklist has been modified or the available BaseURLs have changed.
+        if (!isNaN(selectedIdx)) {
+            return baseUrls[selectedIdx];
+        }
+
+        let selectedBaseUrl = selector.select(baseUrls);
+
+        if (!selectedBaseUrl) {
+            eventBus.trigger(Events.URL_RESOLUTION_FAILED, {
+                error: new DashJSError(Errors.URL_RESOLUTION_FAILED_GENERIC_ERROR_CODE, Errors.URL_RESOLUTION_FAILED_GENERIC_ERROR_MESSAGE)
+            });
+            if (selector === basicSelector) {
+                reset();
+            }
+            return;
+        }
+
+        data.selectedIdx = baseUrls.indexOf(selectedBaseUrl);
+
+        return selectedBaseUrl;
+    }
+
+    function reset() {
+        serviceLocationBlacklistController.reset();
+    }
+
+    instance = {
+        chooseSelectorFromManifest: chooseSelectorFromManifest,
+        select: select,
+        reset: reset,
+        setConfig: setConfig
+    };
+
+    setup();
+
+    return instance;
+}
+
+BaseURLSelector.__dashjs_factory_name = 'BaseURLSelector';
+export default FactoryMaker.getClassFactory(BaseURLSelector);
 //# sourceMappingURL=BaseURLSelector.js.map

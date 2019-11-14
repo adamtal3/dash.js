@@ -27,8 +27,22 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class ManifestInfo{constructor(){this.DVRWindowSize=NaN;this.loadedTime=null;this.availableFrom=null;this.minBufferTime=NaN;this.duration=NaN;this.isDynamic=false;this.maxFragmentDuration=null;}}export default ManifestInfo;
+ */
+class ManifestInfo {
+  constructor() {
+    this.DVRWindowSize = NaN;
+    this.loadedTime = null;
+    this.availableFrom = null;
+    this.minBufferTime = NaN;
+    this.duration = NaN;
+    this.isDynamic = false;
+    this.maxFragmentDuration = null;
+  }
+}
+
+export default ManifestInfo;
 //# sourceMappingURL=ManifestInfo.js.map

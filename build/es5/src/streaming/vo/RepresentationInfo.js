@@ -27,8 +27,21 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class RepresentationInfo{constructor(){this.id=null;this.quality=null;this.DVRWindow=null;this.fragmentDuration=null;this.mediaInfo=null;this.MSETimeOffset=null;}}export default RepresentationInfo;
+ */
+class RepresentationInfo {
+  constructor() {
+    this.id = null;
+    this.quality = null;
+    this.DVRWindow = null;
+    this.fragmentDuration = null;
+    this.mediaInfo = null;
+    this.MSETimeOffset = null;
+  }
+}
+
+export default RepresentationInfo;
 //# sourceMappingURL=RepresentationInfo.js.map

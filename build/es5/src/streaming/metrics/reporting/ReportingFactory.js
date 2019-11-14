@@ -27,5 +27,57 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import DVBReporting from'./reporters/DVBReporting';function ReportingFactory(config){config=config||{};const knownReportingSchemeIdUris={'urn:dvb:dash:reporting:2014':DVBReporting};const context=this.context;const debug=config.debug;const metricsConstants=config.metricsConstants;let instance;function create(entry,rangeController){let reporting;try{reporting=knownReportingSchemeIdUris[entry.schemeIdUri](context).create({metricsConstants:metricsConstants});reporting.initialize(entry,rangeController);}catch(e){reporting=null;debug.error(`ReportingFactory: could not create Reporting with schemeIdUri ${entry.schemeIdUri} (${e.message})`);}return reporting;}function register(schemeIdUri,moduleName){knownReportingSchemeIdUris[schemeIdUri]=moduleName;}function unregister(schemeIdUri){delete knownReportingSchemeIdUris[schemeIdUri];}instance={create:create,register:register,unregister:unregister};return instance;}ReportingFactory.__dashjs_factory_name='ReportingFactory';export default dashjs.FactoryMaker.getSingletonFactory(ReportingFactory);/* jshint ignore:line */
+ */
+
+import DVBReporting from './reporters/DVBReporting';
+
+function ReportingFactory(config) {
+    config = config || {};
+
+    const knownReportingSchemeIdUris = {
+        'urn:dvb:dash:reporting:2014': DVBReporting
+    };
+
+    const context = this.context;
+    const debug = config.debug;
+    const metricsConstants = config.metricsConstants;
+
+    let instance;
+
+    function create(entry, rangeController) {
+        let reporting;
+
+        try {
+            reporting = knownReportingSchemeIdUris[entry.schemeIdUri](context).create({
+                metricsConstants: metricsConstants
+            });
+
+            reporting.initialize(entry, rangeController);
+        } catch (e) {
+            reporting = null;
+            debug.error(`ReportingFactory: could not create Reporting with schemeIdUri ${entry.schemeIdUri} (${e.message})`);
+        }
+
+        return reporting;
+    }
+
+    function register(schemeIdUri, moduleName) {
+        knownReportingSchemeIdUris[schemeIdUri] = moduleName;
+    }
+
+    function unregister(schemeIdUri) {
+        delete knownReportingSchemeIdUris[schemeIdUri];
+    }
+
+    instance = {
+        create: create,
+        register: register,
+        unregister: unregister
+    };
+
+    return instance;
+}
+
+ReportingFactory.__dashjs_factory_name = 'ReportingFactory';
+export default dashjs.FactoryMaker.getSingletonFactory(ReportingFactory); /* jshint ignore:line */
 //# sourceMappingURL=ReportingFactory.js.map

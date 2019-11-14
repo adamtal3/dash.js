@@ -27,10 +27,25 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class URIFragmentData{constructor(){this.t=null;this.xywh=null;this.track=null;this.id=null;this.s=null;this.r=null;}}export default URIFragmentData;/*
+ */
+class URIFragmentData {
+    constructor() {
+        this.t = null;
+        this.xywh = null;
+        this.track = null;
+        this.id = null;
+        this.s = null;
+        this.r = null;
+    }
+}
+
+export default URIFragmentData;
+
+/*
     From Spec http://www.w3.org/TR/media-frags/
 
     temporal (t)     - This dimension denotes a specific time range in the original media, such as "starting at second 10, continuing until second 20";

@@ -27,14 +27,189 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import FactoryMaker from'../../core/FactoryMaker';import Debug from'../../core/Debug';import Constants from'../constants/Constants';const legacyKeysAndReplacements=[{oldKey:'dashjs_vbitrate',newKey:'dashjs_video_bitrate'},{oldKey:'dashjs_abitrate',newKey:'dashjs_audio_bitrate'},{oldKey:'dashjs_vsettings',newKey:'dashjs_video_settings'},{oldKey:'dashjs_asettings',newKey:'dashjs_audio_settings'}];const LOCAL_STORAGE_BITRATE_KEY_TEMPLATE='dashjs_?_bitrate';const LOCAL_STORAGE_SETTINGS_KEY_TEMPLATE='dashjs_?_settings';const STORAGE_TYPE_LOCAL='localStorage';const STORAGE_TYPE_SESSION='sessionStorage';const LAST_BITRATE='LastBitrate';const LAST_MEDIA_SETTINGS='LastMediaSettings';function DOMStorage(config){config=config||{};const context=this.context;const mediaPlayerModel=config.mediaPlayerModel;let instance,logger,supported;function setup(){logger=Debug(context).getInstance().getLogger(instance);translateLegacyKeys();}//type can be local, session
-function isSupported(type){if(supported!==undefined)return supported;supported=false;const testKey='1';const testValue='1';let storage;try{if(typeof window!=='undefined'){storage=window[type];}}catch(error){logger.warn('DOMStorage access denied: '+error.message);return supported;}if(!storage||type!==STORAGE_TYPE_LOCAL&&type!==STORAGE_TYPE_SESSION){return supported;}/* When Safari (OS X or iOS) is in private browsing mode, it appears as though localStorage is available, but trying to call setItem throws an exception.
-         http://stackoverflow.com/questions/14555347/html5-localstorage-error-with-safari-quota-exceeded-err-dom-exception-22-an
+ */
+import FactoryMaker from '../../core/FactoryMaker';
+import Debug from '../../core/Debug';
+import Constants from '../constants/Constants';
 
-         Check if the storage can be used
-         */try{storage.setItem(testKey,testValue);storage.removeItem(testKey);supported=true;}catch(error){logger.warn('DOMStorage is supported, but cannot be used: '+error.message);}return supported;}function translateLegacyKeys(){if(isSupported(STORAGE_TYPE_LOCAL)){legacyKeysAndReplacements.forEach(entry=>{const value=localStorage.getItem(entry.oldKey);if(value){localStorage.removeItem(entry.oldKey);try{localStorage.setItem(entry.newKey,value);}catch(e){logger.error(e.message);}}});}}// Return current epoch time, ms, rounded to the nearest 10m to avoid fingerprinting user
-function getTimestamp(){const ten_minutes_ms=60*1000*10;return Math.round(new Date().getTime()/ten_minutes_ms)*ten_minutes_ms;}function canStore(storageType,key){return isSupported(storageType)&&mediaPlayerModel['get'+key+'CachingInfo']().enabled;}function checkConfig(){if(!mediaPlayerModel||!mediaPlayerModel.hasOwnProperty('getLastMediaSettingsCachingInfo')){throw new Error(Constants.MISSING_CONFIG_ERROR);}}function getSavedMediaSettings(type){checkConfig();//Checks local storage to see if there is valid, non-expired media settings
-if(!canStore(STORAGE_TYPE_LOCAL,LAST_MEDIA_SETTINGS))return null;let settings=null;const key=LOCAL_STORAGE_SETTINGS_KEY_TEMPLATE.replace(/\?/,type);try{const obj=JSON.parse(localStorage.getItem(key))||{};const isExpired=new Date().getTime()-parseInt(obj.timestamp,10)>=mediaPlayerModel.getLastMediaSettingsCachingInfo().ttl||false;settings=obj.settings;if(isExpired){localStorage.removeItem(key);settings=null;}}catch(e){return null;}return settings;}function getSavedBitrateSettings(type){let savedBitrate=NaN;checkConfig();//Checks local storage to see if there is valid, non-expired bit rate
-//hinting from the last play session to use as a starting bit rate.
-if(canStore(STORAGE_TYPE_LOCAL,LAST_BITRATE)){const key=LOCAL_STORAGE_BITRATE_KEY_TEMPLATE.replace(/\?/,type);try{const obj=JSON.parse(localStorage.getItem(key))||{};const isExpired=new Date().getTime()-parseInt(obj.timestamp,10)>=mediaPlayerModel.getLastMediaSettingsCachingInfo().ttl||false;const bitrate=parseFloat(obj.bitrate);if(!isNaN(bitrate)&&!isExpired){savedBitrate=bitrate;logger.debug('Last saved bitrate for '+type+' was '+bitrate);}else if(isExpired){localStorage.removeItem(key);}}catch(e){return null;}}return savedBitrate;}function setSavedMediaSettings(type,value){if(canStore(STORAGE_TYPE_LOCAL,LAST_MEDIA_SETTINGS)){const key=LOCAL_STORAGE_SETTINGS_KEY_TEMPLATE.replace(/\?/,type);try{localStorage.setItem(key,JSON.stringify({settings:value,timestamp:getTimestamp()}));}catch(e){logger.error(e.message);}}}function setSavedBitrateSettings(type,bitrate){if(canStore(STORAGE_TYPE_LOCAL,LAST_BITRATE)&&bitrate){const key=LOCAL_STORAGE_BITRATE_KEY_TEMPLATE.replace(/\?/,type);try{localStorage.setItem(key,JSON.stringify({bitrate:bitrate.toFixed(3),timestamp:getTimestamp()}));}catch(e){logger.error(e.message);}}}instance={getSavedBitrateSettings:getSavedBitrateSettings,setSavedBitrateSettings:setSavedBitrateSettings,getSavedMediaSettings:getSavedMediaSettings,setSavedMediaSettings:setSavedMediaSettings};setup();return instance;}DOMStorage.__dashjs_factory_name='DOMStorage';const factory=FactoryMaker.getSingletonFactory(DOMStorage);export default factory;
+const legacyKeysAndReplacements = [{ oldKey: 'dashjs_vbitrate', newKey: 'dashjs_video_bitrate' }, { oldKey: 'dashjs_abitrate', newKey: 'dashjs_audio_bitrate' }, { oldKey: 'dashjs_vsettings', newKey: 'dashjs_video_settings' }, { oldKey: 'dashjs_asettings', newKey: 'dashjs_audio_settings' }];
+
+const LOCAL_STORAGE_BITRATE_KEY_TEMPLATE = 'dashjs_?_bitrate';
+const LOCAL_STORAGE_SETTINGS_KEY_TEMPLATE = 'dashjs_?_settings';
+
+const STORAGE_TYPE_LOCAL = 'localStorage';
+const STORAGE_TYPE_SESSION = 'sessionStorage';
+const LAST_BITRATE = 'LastBitrate';
+const LAST_MEDIA_SETTINGS = 'LastMediaSettings';
+
+function DOMStorage(config) {
+
+    config = config || {};
+    const context = this.context;
+    const mediaPlayerModel = config.mediaPlayerModel;
+
+    let instance, logger, supported;
+
+    function setup() {
+        logger = Debug(context).getInstance().getLogger(instance);
+        translateLegacyKeys();
+    }
+
+    //type can be local, session
+    function isSupported(type) {
+        if (supported !== undefined) return supported;
+
+        supported = false;
+
+        const testKey = '1';
+        const testValue = '1';
+        let storage;
+
+        try {
+            if (typeof window !== 'undefined') {
+                storage = window[type];
+            }
+        } catch (error) {
+            logger.warn('DOMStorage access denied: ' + error.message);
+            return supported;
+        }
+
+        if (!storage || type !== STORAGE_TYPE_LOCAL && type !== STORAGE_TYPE_SESSION) {
+            return supported;
+        }
+
+        /* When Safari (OS X or iOS) is in private browsing mode, it appears as though localStorage is available, but trying to call setItem throws an exception.
+         http://stackoverflow.com/questions/14555347/html5-localstorage-error-with-safari-quota-exceeded-err-dom-exception-22-an
+          Check if the storage can be used
+         */
+        try {
+            storage.setItem(testKey, testValue);
+            storage.removeItem(testKey);
+            supported = true;
+        } catch (error) {
+            logger.warn('DOMStorage is supported, but cannot be used: ' + error.message);
+        }
+
+        return supported;
+    }
+
+    function translateLegacyKeys() {
+        if (isSupported(STORAGE_TYPE_LOCAL)) {
+            legacyKeysAndReplacements.forEach(entry => {
+                const value = localStorage.getItem(entry.oldKey);
+
+                if (value) {
+                    localStorage.removeItem(entry.oldKey);
+
+                    try {
+                        localStorage.setItem(entry.newKey, value);
+                    } catch (e) {
+                        logger.error(e.message);
+                    }
+                }
+            });
+        }
+    }
+
+    // Return current epoch time, ms, rounded to the nearest 10m to avoid fingerprinting user
+    function getTimestamp() {
+        const ten_minutes_ms = 60 * 1000 * 10;
+        return Math.round(new Date().getTime() / ten_minutes_ms) * ten_minutes_ms;
+    }
+
+    function canStore(storageType, key) {
+        return isSupported(storageType) && mediaPlayerModel['get' + key + 'CachingInfo']().enabled;
+    }
+
+    function checkConfig() {
+        if (!mediaPlayerModel || !mediaPlayerModel.hasOwnProperty('getLastMediaSettingsCachingInfo')) {
+            throw new Error(Constants.MISSING_CONFIG_ERROR);
+        }
+    }
+
+    function getSavedMediaSettings(type) {
+        checkConfig();
+        //Checks local storage to see if there is valid, non-expired media settings
+        if (!canStore(STORAGE_TYPE_LOCAL, LAST_MEDIA_SETTINGS)) return null;
+
+        let settings = null;
+        const key = LOCAL_STORAGE_SETTINGS_KEY_TEMPLATE.replace(/\?/, type);
+        try {
+            const obj = JSON.parse(localStorage.getItem(key)) || {};
+            const isExpired = new Date().getTime() - parseInt(obj.timestamp, 10) >= mediaPlayerModel.getLastMediaSettingsCachingInfo().ttl || false;
+            settings = obj.settings;
+
+            if (isExpired) {
+                localStorage.removeItem(key);
+                settings = null;
+            }
+        } catch (e) {
+            return null;
+        }
+        return settings;
+    }
+
+    function getSavedBitrateSettings(type) {
+        let savedBitrate = NaN;
+
+        checkConfig();
+
+        //Checks local storage to see if there is valid, non-expired bit rate
+        //hinting from the last play session to use as a starting bit rate.
+        if (canStore(STORAGE_TYPE_LOCAL, LAST_BITRATE)) {
+            const key = LOCAL_STORAGE_BITRATE_KEY_TEMPLATE.replace(/\?/, type);
+            try {
+                const obj = JSON.parse(localStorage.getItem(key)) || {};
+                const isExpired = new Date().getTime() - parseInt(obj.timestamp, 10) >= mediaPlayerModel.getLastMediaSettingsCachingInfo().ttl || false;
+                const bitrate = parseFloat(obj.bitrate);
+
+                if (!isNaN(bitrate) && !isExpired) {
+                    savedBitrate = bitrate;
+                    logger.debug('Last saved bitrate for ' + type + ' was ' + bitrate);
+                } else if (isExpired) {
+                    localStorage.removeItem(key);
+                }
+            } catch (e) {
+                return null;
+            }
+        }
+        return savedBitrate;
+    }
+
+    function setSavedMediaSettings(type, value) {
+        if (canStore(STORAGE_TYPE_LOCAL, LAST_MEDIA_SETTINGS)) {
+            const key = LOCAL_STORAGE_SETTINGS_KEY_TEMPLATE.replace(/\?/, type);
+            try {
+                localStorage.setItem(key, JSON.stringify({ settings: value, timestamp: getTimestamp() }));
+            } catch (e) {
+                logger.error(e.message);
+            }
+        }
+    }
+
+    function setSavedBitrateSettings(type, bitrate) {
+        if (canStore(STORAGE_TYPE_LOCAL, LAST_BITRATE) && bitrate) {
+            const key = LOCAL_STORAGE_BITRATE_KEY_TEMPLATE.replace(/\?/, type);
+            try {
+                localStorage.setItem(key, JSON.stringify({ bitrate: bitrate.toFixed(3), timestamp: getTimestamp() }));
+            } catch (e) {
+                logger.error(e.message);
+            }
+        }
+    }
+
+    instance = {
+        getSavedBitrateSettings: getSavedBitrateSettings,
+        setSavedBitrateSettings: setSavedBitrateSettings,
+        getSavedMediaSettings: getSavedMediaSettings,
+        setSavedMediaSettings: setSavedMediaSettings
+    };
+
+    setup();
+    return instance;
+}
+
+DOMStorage.__dashjs_factory_name = 'DOMStorage';
+const factory = FactoryMaker.getSingletonFactory(DOMStorage);
+export default factory;
 //# sourceMappingURL=DOMStorage.js.map

@@ -27,11 +27,35 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */const DEFAULT_DVB_PRIORITY=1;const DEFAULT_DVB_WEIGHT=1;class BaseURL{constructor(url,serviceLocation,priority,weight){this.url=url||'';this.serviceLocation=serviceLocation||url||'';// DVB extensions
-this.dvb_priority=priority||DEFAULT_DVB_PRIORITY;this.dvb_weight=weight||DEFAULT_DVB_WEIGHT;this.availabilityTimeOffset=0;this.availabilityTimeComplete=true;/* currently unused:
-         * byteRange,
-         */}}BaseURL.DEFAULT_DVB_PRIORITY=DEFAULT_DVB_PRIORITY;BaseURL.DEFAULT_DVB_WEIGHT=DEFAULT_DVB_WEIGHT;export default BaseURL;
+ */
+
+const DEFAULT_DVB_PRIORITY = 1;
+const DEFAULT_DVB_WEIGHT = 1;
+
+class BaseURL {
+  constructor(url, serviceLocation, priority, weight) {
+    this.url = url || '';
+    this.serviceLocation = serviceLocation || url || '';
+
+    // DVB extensions
+    this.dvb_priority = priority || DEFAULT_DVB_PRIORITY;
+    this.dvb_weight = weight || DEFAULT_DVB_WEIGHT;
+
+    this.availabilityTimeOffset = 0;
+    this.availabilityTimeComplete = true;
+
+    /* currently unused:
+     * byteRange,
+     */
+  }
+}
+
+BaseURL.DEFAULT_DVB_PRIORITY = DEFAULT_DVB_PRIORITY;
+BaseURL.DEFAULT_DVB_WEIGHT = DEFAULT_DVB_WEIGHT;
+
+export default BaseURL;
 //# sourceMappingURL=BaseURL.js.map

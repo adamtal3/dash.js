@@ -27,15 +27,38 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import FactoryMaker from'../../core/FactoryMaker';import deepEqual from'fast-deep-equal';/**
+ */
+
+import FactoryMaker from '../../core/FactoryMaker';
+import deepEqual from 'fast-deep-equal';
+
+/**
  * @module ObjectUtils
  * @description Provides utility functions for objects
- */function ObjectUtils(){let instance;/**
-     * Returns true if objects are equal
-     * @return {boolean}
-     * @param {object} obj1
-     * @param {object} obj2
-     * @memberof module:ObjectUtils
-     * @instance
-     */function areEqual(obj1,obj2){return deepEqual(obj1,obj2);}instance={areEqual:areEqual};return instance;}ObjectUtils.__dashjs_factory_name='ObjectUtils';export default FactoryMaker.getSingletonFactory(ObjectUtils);
+ */
+function ObjectUtils() {
+
+  let instance;
+
+  /**
+   * Returns true if objects are equal
+   * @return {boolean}
+   * @param {object} obj1
+   * @param {object} obj2
+   * @memberof module:ObjectUtils
+   * @instance
+   */
+  function areEqual(obj1, obj2) {
+    return deepEqual(obj1, obj2);
+  }
+
+  instance = {
+    areEqual: areEqual
+  };
+
+  return instance;
+}
+
+ObjectUtils.__dashjs_factory_name = 'ObjectUtils';
+export default FactoryMaker.getSingletonFactory(ObjectUtils);
 //# sourceMappingURL=ObjectUtils.js.map

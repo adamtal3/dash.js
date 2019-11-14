@@ -27,9 +27,37 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+
+/**
  * Metrics Constants declaration
  * @class
  * @ignore
- */class MetricsConstants{init(){this.TCP_CONNECTION='TcpList';this.HTTP_REQUEST='HttpList';this.TRACK_SWITCH='RepSwitchList';this.BUFFER_LEVEL='BufferLevel';this.BUFFER_STATE='BufferState';this.DVR_INFO='DVRInfo';this.DROPPED_FRAMES='DroppedFrames';this.SCHEDULING_INFO='SchedulingInfo';this.REQUESTS_QUEUE='RequestsQueue';this.MANIFEST_UPDATE='ManifestUpdate';this.MANIFEST_UPDATE_STREAM_INFO='ManifestUpdatePeriodInfo';this.MANIFEST_UPDATE_TRACK_INFO='ManifestUpdateRepresentationInfo';this.PLAY_LIST='PlayList';this.DVB_ERRORS='DVBErrors';}constructor(){this.init();}}let constants=new MetricsConstants();export default constants;
+ */
+class MetricsConstants {
+
+    init() {
+        this.TCP_CONNECTION = 'TcpList';
+        this.HTTP_REQUEST = 'HttpList';
+        this.TRACK_SWITCH = 'RepSwitchList';
+        this.BUFFER_LEVEL = 'BufferLevel';
+        this.BUFFER_STATE = 'BufferState';
+        this.DVR_INFO = 'DVRInfo';
+        this.DROPPED_FRAMES = 'DroppedFrames';
+        this.SCHEDULING_INFO = 'SchedulingInfo';
+        this.REQUESTS_QUEUE = 'RequestsQueue';
+        this.MANIFEST_UPDATE = 'ManifestUpdate';
+        this.MANIFEST_UPDATE_STREAM_INFO = 'ManifestUpdatePeriodInfo';
+        this.MANIFEST_UPDATE_TRACK_INFO = 'ManifestUpdateRepresentationInfo';
+        this.PLAY_LIST = 'PlayList';
+        this.DVB_ERRORS = 'DVBErrors';
+    }
+
+    constructor() {
+        this.init();
+    }
+}
+
+let constants = new MetricsConstants();
+export default constants;
 //# sourceMappingURL=MetricsConstants.js.map

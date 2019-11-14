@@ -27,9 +27,95 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import Constants from'../../constants/Constants';import Debug from'../../../core/Debug';import FactoryMaker from'../../../core/FactoryMaker';import FragmentRequest from'../../../streaming/vo/FragmentRequest';function NextFragmentRequestRule(config){config=config||{};const context=this.context;const adapter=config.adapter;const textController=config.textController;const playbackController=config.playbackController;let instance,logger;function setup(){logger=Debug(context).getInstance().getLogger(instance);}function execute(streamProcessor,seekTarget,requestToReplace){if(!streamProcessor){return null;}const representationInfo=streamProcessor.getRepresentationInfo();const mediaType=streamProcessor.getType();const hasSeekTarget=!isNaN(seekTarget);const bufferController=streamProcessor.getBufferController();const currentTime=playbackController.getNormalizedTime();let time=hasSeekTarget?seekTarget:adapter.getIndexHandlerTime(streamProcessor);let bufferIsDivided=false;let request;if(isNaN(time)||mediaType===Constants.FRAGMENTED_TEXT&&!textController.isTextEnabled()){return null;}/**
+ */
+import Constants from '../../constants/Constants';
+import Debug from '../../../core/Debug';
+import FactoryMaker from '../../../core/FactoryMaker';
+import FragmentRequest from '../../../streaming/vo/FragmentRequest';
+
+function NextFragmentRequestRule(config) {
+
+    config = config || {};
+    const context = this.context;
+    const adapter = config.adapter;
+    const textController = config.textController;
+    const playbackController = config.playbackController;
+
+    let instance, logger;
+
+    function setup() {
+        logger = Debug(context).getInstance().getLogger(instance);
+    }
+
+    function execute(streamProcessor, seekTarget, requestToReplace) {
+        if (!streamProcessor) {
+            return null;
+        }
+        const representationInfo = streamProcessor.getRepresentationInfo();
+        const mediaType = streamProcessor.getType();
+        const hasSeekTarget = !isNaN(seekTarget);
+        const bufferController = streamProcessor.getBufferController();
+        const currentTime = playbackController.getNormalizedTime();
+        let time = hasSeekTarget ? seekTarget : adapter.getIndexHandlerTime(streamProcessor);
+        let bufferIsDivided = false;
+        let request;
+
+        if (isNaN(time) || mediaType === Constants.FRAGMENTED_TEXT && !textController.isTextEnabled()) {
+            return null;
+        }
+        /**
          * This is critical for IE/Safari/EDGE
-         * */if(bufferController){let range=bufferController.getRangeAt(time);const playingRange=bufferController.getRangeAt(currentTime);const hasDiscontinuities=bufferController.getBuffer().hasDiscontinuitiesAfter(currentTime);if((range!==null||playingRange!==null)&&!hasSeekTarget){if(!range||playingRange&&playingRange.start!=range.start&&playingRange.end!=range.end){if(hasDiscontinuities&&mediaType!==Constants.FRAGMENTED_TEXT){logger.debug('Found discontinuities after end of playing range at',playingRange.end);streamProcessor.getFragmentModel().removeExecutedRequestsAfterTime(playingRange.end);bufferIsDivided=true;}range=playingRange;}if(time!==range.end){logger.debug('Prior to making a request for time, NextFragmentRequestRule is aligning index handler\'s currentTime with bufferedRange.end for',mediaType,'.',time,'was changed to',range.end);time=range.end;}}}if(requestToReplace){time=requestToReplace.startTime+requestToReplace.duration/2;request=adapter.getFragmentRequest(streamProcessor,representationInfo,time,{timeThreshold:0,ignoreIsFinished:true});}else{request=adapter.getFragmentRequest(streamProcessor,representationInfo,time,{keepIdx:!hasSeekTarget&&!bufferIsDivided});// Then, check if this request was downloaded or not
-while(request&&request.action!==FragmentRequest.ACTION_COMPLETE&&streamProcessor.getFragmentModel().isFragmentLoaded(request)){// loop until we found not loaded fragment, or no fragment
-request=adapter.getFragmentRequest(streamProcessor,representationInfo);}}return request;}instance={execute:execute};setup();return instance;}NextFragmentRequestRule.__dashjs_factory_name='NextFragmentRequestRule';export default FactoryMaker.getClassFactory(NextFragmentRequestRule);
+         * */
+        if (bufferController) {
+            let range = bufferController.getRangeAt(time);
+            const playingRange = bufferController.getRangeAt(currentTime);
+            const hasDiscontinuities = bufferController.getBuffer().hasDiscontinuitiesAfter(currentTime);
+            if ((range !== null || playingRange !== null) && !hasSeekTarget) {
+                if (!range || playingRange && playingRange.start != range.start && playingRange.end != range.end) {
+                    if (hasDiscontinuities && mediaType !== Constants.FRAGMENTED_TEXT) {
+                        logger.debug('Found discontinuities after end of playing range at', playingRange.end);
+                        streamProcessor.getFragmentModel().removeExecutedRequestsAfterTime(playingRange.end);
+                        bufferIsDivided = true;
+                    }
+                    range = playingRange;
+                }
+                if (time !== range.end) {
+                    logger.debug('Prior to making a request for time, NextFragmentRequestRule is aligning index handler\'s currentTime with bufferedRange.end for', mediaType, '.', time, 'was changed to', range.end);
+                    time = range.end;
+                }
+            }
+        }
+
+        if (requestToReplace) {
+            time = requestToReplace.startTime + requestToReplace.duration / 2;
+            request = adapter.getFragmentRequest(streamProcessor, representationInfo, time, {
+                timeThreshold: 0,
+                ignoreIsFinished: true
+            });
+        } else {
+            request = adapter.getFragmentRequest(streamProcessor, representationInfo, time, {
+                keepIdx: !hasSeekTarget && !bufferIsDivided
+            });
+
+            // Then, check if this request was downloaded or not
+            while (request && request.action !== FragmentRequest.ACTION_COMPLETE && streamProcessor.getFragmentModel().isFragmentLoaded(request)) {
+                // loop until we found not loaded fragment, or no fragment
+                request = adapter.getFragmentRequest(streamProcessor, representationInfo);
+            }
+        }
+
+        return request;
+    }
+
+    instance = {
+        execute: execute
+    };
+
+    setup();
+
+    return instance;
+}
+
+NextFragmentRequestRule.__dashjs_factory_name = 'NextFragmentRequestRule';
+export default FactoryMaker.getClassFactory(NextFragmentRequestRule);
 //# sourceMappingURL=NextFragmentRequestRule.js.map

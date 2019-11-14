@@ -27,8 +27,13 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */import CoreEvents from'./CoreEvents';class Events extends CoreEvents{}let events=new Events();export default events;
+ */
+import CoreEvents from './CoreEvents';
+class Events extends CoreEvents {}
+let events = new Events();
+export default events;
 //# sourceMappingURL=Events.js.map

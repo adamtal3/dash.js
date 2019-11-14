@@ -27,7 +27,19 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @classdesc Matches and converts xs:numeric to float
- */import BaseMatcher from'./BaseMatcher';const numericRegex=/^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$/;class NumericMatcher extends BaseMatcher{constructor(){super(attr=>numericRegex.test(attr.value),str=>parseFloat(str));}}export default NumericMatcher;
+ */
+import BaseMatcher from './BaseMatcher';
+
+const numericRegex = /^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$/;
+
+class NumericMatcher extends BaseMatcher {
+    constructor() {
+        super(attr => numericRegex.test(attr.value), str => parseFloat(str));
+    }
+}
+
+export default NumericMatcher;
 //# sourceMappingURL=NumericMatcher.js.map

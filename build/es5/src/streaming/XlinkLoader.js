@@ -27,5 +27,77 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import DashJSError from'./vo/DashJSError';import HTTPLoader from'./net/HTTPLoader';import{HTTPRequest}from'./vo/metrics/HTTPRequest';import TextRequest from'./vo/TextRequest';import EventBus from'../core/EventBus';import Events from'../core/events/Events';import FactoryMaker from'../core/FactoryMaker';import Errors from'../core/errors/Errors';function XlinkLoader(config){config=config||{};const RESOLVE_TO_ZERO='urn:mpeg:dash:resolve-to-zero:2013';const context=this.context;const eventBus=EventBus(context).getInstance();let httpLoader=HTTPLoader(context).create({errHandler:config.errHandler,metricsModel:config.metricsModel,mediaPlayerModel:config.mediaPlayerModel,requestModifier:config.requestModifier});let instance;function load(url,element,resolveObject){const report=function(content,resolveToZero){element.resolved=true;element.resolvedContent=content?content:null;eventBus.trigger(Events.XLINK_ELEMENT_LOADED,{element:element,resolveObject:resolveObject,error:content||resolveToZero?null:new DashJSError(Errors.XLINK_LOADER_LOADING_FAILURE_ERROR_CODE,Errors.XLINK_LOADER_LOADING_FAILURE_ERROR_MESSAGE+url)});};if(url===RESOLVE_TO_ZERO){report(null,true);}else{const request=new TextRequest(url,HTTPRequest.XLINK_EXPANSION_TYPE);httpLoader.load({request:request,success:function(data){report(data);},error:function(){report(null);}});}}function reset(){if(httpLoader){httpLoader.abort();httpLoader=null;}}instance={load:load,reset:reset};return instance;}XlinkLoader.__dashjs_factory_name='XlinkLoader';export default FactoryMaker.getClassFactory(XlinkLoader);
+ */
+import DashJSError from './vo/DashJSError';
+import HTTPLoader from './net/HTTPLoader';
+import { HTTPRequest } from './vo/metrics/HTTPRequest';
+import TextRequest from './vo/TextRequest';
+import EventBus from '../core/EventBus';
+import Events from '../core/events/Events';
+import FactoryMaker from '../core/FactoryMaker';
+import Errors from '../core/errors/Errors';
+
+function XlinkLoader(config) {
+
+    config = config || {};
+    const RESOLVE_TO_ZERO = 'urn:mpeg:dash:resolve-to-zero:2013';
+
+    const context = this.context;
+    const eventBus = EventBus(context).getInstance();
+
+    let httpLoader = HTTPLoader(context).create({
+        errHandler: config.errHandler,
+        metricsModel: config.metricsModel,
+        mediaPlayerModel: config.mediaPlayerModel,
+        requestModifier: config.requestModifier
+    });
+
+    let instance;
+
+    function load(url, element, resolveObject) {
+        const report = function (content, resolveToZero) {
+            element.resolved = true;
+            element.resolvedContent = content ? content : null;
+
+            eventBus.trigger(Events.XLINK_ELEMENT_LOADED, {
+                element: element,
+                resolveObject: resolveObject,
+                error: content || resolveToZero ? null : new DashJSError(Errors.XLINK_LOADER_LOADING_FAILURE_ERROR_CODE, Errors.XLINK_LOADER_LOADING_FAILURE_ERROR_MESSAGE + url)
+            });
+        };
+
+        if (url === RESOLVE_TO_ZERO) {
+            report(null, true);
+        } else {
+            const request = new TextRequest(url, HTTPRequest.XLINK_EXPANSION_TYPE);
+
+            httpLoader.load({
+                request: request,
+                success: function (data) {
+                    report(data);
+                },
+                error: function () {
+                    report(null);
+                }
+            });
+        }
+    }
+
+    function reset() {
+        if (httpLoader) {
+            httpLoader.abort();
+            httpLoader = null;
+        }
+    }
+
+    instance = {
+        load: load,
+        reset: reset
+    };
+
+    return instance;
+}
+
+XlinkLoader.__dashjs_factory_name = 'XlinkLoader';
+export default FactoryMaker.getClassFactory(XlinkLoader);
 //# sourceMappingURL=XlinkLoader.js.map

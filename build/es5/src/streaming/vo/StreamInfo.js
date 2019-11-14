@@ -27,8 +27,21 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class StreamInfo{constructor(){this.id=null;this.index=null;this.start=NaN;this.duration=NaN;this.manifestInfo=null;this.isLast=true;}}export default StreamInfo;
+ */
+class StreamInfo {
+  constructor() {
+    this.id = null;
+    this.index = null;
+    this.start = NaN;
+    this.duration = NaN;
+    this.manifestInfo = null;
+    this.isLast = true;
+  }
+}
+
+export default StreamInfo;
 //# sourceMappingURL=StreamInfo.js.map

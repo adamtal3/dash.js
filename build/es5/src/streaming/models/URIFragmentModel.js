@@ -27,15 +27,61 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import URIFragmentData from'../vo/URIFragmentData';import FactoryMaker from'../../core/FactoryMaker';/**
+ */
+
+import URIFragmentData from '../vo/URIFragmentData';
+import FactoryMaker from '../../core/FactoryMaker';
+
+/**
  * Model class managing URI fragments.
- */function URIFragmentModel(){let instance,URIFragmentDataVO;/**
+ */
+function URIFragmentModel() {
+
+    let instance, URIFragmentDataVO;
+
+    /**
      * @param {string} uri The URI to parse for fragment extraction
      * @memberof module:URIFragmentModel
      * @instance
-     */function initialize(uri){URIFragmentDataVO=new URIFragmentData();if(!uri)return null;const hashIndex=uri.indexOf('#');if(hashIndex!==-1){const fragments=uri.substr(hashIndex+1).split('&');for(let i=0,len=fragments.length;i<len;++i){const fragment=fragments[i];const equalIndex=fragment.indexOf('=');if(equalIndex!==-1){const key=fragment.substring(0,equalIndex);if(URIFragmentDataVO.hasOwnProperty(key)){URIFragmentDataVO[key]=fragment.substr(equalIndex+1);}}}}}/**
+     */
+    function initialize(uri) {
+        URIFragmentDataVO = new URIFragmentData();
+
+        if (!uri) return null;
+
+        const hashIndex = uri.indexOf('#');
+        if (hashIndex !== -1) {
+            const fragments = uri.substr(hashIndex + 1).split('&');
+            for (let i = 0, len = fragments.length; i < len; ++i) {
+                const fragment = fragments[i];
+                const equalIndex = fragment.indexOf('=');
+                if (equalIndex !== -1) {
+                    const key = fragment.substring(0, equalIndex);
+                    if (URIFragmentDataVO.hasOwnProperty(key)) {
+                        URIFragmentDataVO[key] = fragment.substr(equalIndex + 1);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * @returns {URIFragmentData} Object containing supported URI fragments
      * @memberof module:URIFragmentModel
      * @instance
-     */function getURIFragmentData(){return URIFragmentDataVO;}instance={initialize:initialize,getURIFragmentData:getURIFragmentData};return instance;}URIFragmentModel.__dashjs_factory_name='URIFragmentModel';export default FactoryMaker.getSingletonFactory(URIFragmentModel);
+     */
+    function getURIFragmentData() {
+        return URIFragmentDataVO;
+    }
+
+    instance = {
+        initialize: initialize,
+        getURIFragmentData: getURIFragmentData
+    };
+
+    return instance;
+}
+
+URIFragmentModel.__dashjs_factory_name = 'URIFragmentModel';
+export default FactoryMaker.getSingletonFactory(URIFragmentModel);
 //# sourceMappingURL=URIFragmentModel.js.map

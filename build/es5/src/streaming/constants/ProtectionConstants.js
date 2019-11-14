@@ -27,9 +27,26 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+
+/**
  * Protection Constants declaration
  * @class
  * @ignore
- */class ProtectionConstants{init(){this.CLEARKEY_KEYSTEM_STRING='org.w3.clearkey';this.WIDEVINE_KEYSTEM_STRING='com.widevine.alpha';this.PLAYREADY_KEYSTEM_STRING='com.microsoft.playready';}constructor(){this.init();}}let constants=new ProtectionConstants();export default constants;
+ */
+class ProtectionConstants {
+
+    init() {
+        this.CLEARKEY_KEYSTEM_STRING = 'org.w3.clearkey';
+        this.WIDEVINE_KEYSTEM_STRING = 'com.widevine.alpha';
+        this.PLAYREADY_KEYSTEM_STRING = 'com.microsoft.playready';
+    }
+
+    constructor() {
+        this.init();
+    }
+}
+
+let constants = new ProtectionConstants();
+export default constants;
 //# sourceMappingURL=ProtectionConstants.js.map

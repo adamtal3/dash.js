@@ -27,8 +27,19 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class Metrics{constructor(){this.metrics='';this.Range=[];this.Reporting=[];}}export default Metrics;
+ */
+class Metrics {
+  constructor() {
+
+    this.metrics = '';
+    this.Range = [];
+    this.Reporting = [];
+  }
+}
+
+export default Metrics;
 //# sourceMappingURL=Metrics.js.map

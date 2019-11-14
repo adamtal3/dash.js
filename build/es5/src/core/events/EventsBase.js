@@ -27,8 +27,25 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class EventsBase{extend(events,config){if(!events)return;let override=config?config.override:false;let publicOnly=config?config.publicOnly:false;for(const evt in events){if(!events.hasOwnProperty(evt)||this[evt]&&!override)continue;if(publicOnly&&events[evt].indexOf('public_')===-1)continue;this[evt]=events[evt];}}}export default EventsBase;
+ */
+class EventsBase {
+    extend(events, config) {
+        if (!events) return;
+
+        let override = config ? config.override : false;
+        let publicOnly = config ? config.publicOnly : false;
+
+        for (const evt in events) {
+            if (!events.hasOwnProperty(evt) || this[evt] && !override) continue;
+            if (publicOnly && events[evt].indexOf('public_') === -1) continue;
+            this[evt] = events[evt];
+        }
+    }
+}
+
+export default EventsBase;
 //# sourceMappingURL=EventsBase.js.map

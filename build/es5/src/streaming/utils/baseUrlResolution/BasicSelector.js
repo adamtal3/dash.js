@@ -27,5 +27,39 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import FactoryMaker from'../../../core/FactoryMaker';function BasicSelector(config){config=config||{};let instance;const blacklistController=config.blacklistController;function select(baseUrls){let index=0;let selectedBaseUrl;if(baseUrls&&baseUrls.some((baseUrl,idx)=>{index=idx;return!blacklistController.contains(baseUrl.serviceLocation);})){selectedBaseUrl=baseUrls[index];}return selectedBaseUrl;}instance={select:select};return instance;}BasicSelector.__dashjs_factory_name='BasicSelector';export default FactoryMaker.getClassFactory(BasicSelector);
+ */
+
+import FactoryMaker from '../../../core/FactoryMaker';
+
+function BasicSelector(config) {
+
+    config = config || {};
+    let instance;
+
+    const blacklistController = config.blacklistController;
+
+    function select(baseUrls) {
+        let index = 0;
+        let selectedBaseUrl;
+
+        if (baseUrls && baseUrls.some((baseUrl, idx) => {
+            index = idx;
+
+            return !blacklistController.contains(baseUrl.serviceLocation);
+        })) {
+            selectedBaseUrl = baseUrls[index];
+        }
+
+        return selectedBaseUrl;
+    }
+
+    instance = {
+        select: select
+    };
+
+    return instance;
+}
+
+BasicSelector.__dashjs_factory_name = 'BasicSelector';
+export default FactoryMaker.getClassFactory(BasicSelector);
 //# sourceMappingURL=BasicSelector.js.map

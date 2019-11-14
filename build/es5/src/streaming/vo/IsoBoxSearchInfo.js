@@ -27,8 +27,18 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class IsoBoxSearchInfo{constructor(lastCompletedOffset,found,size){this.lastCompletedOffset=lastCompletedOffset;this.found=found;this.size=size;}}export default IsoBoxSearchInfo;
+ */
+class IsoBoxSearchInfo {
+  constructor(lastCompletedOffset, found, size) {
+    this.lastCompletedOffset = lastCompletedOffset;
+    this.found = found;
+    this.size = size;
+  }
+}
+
+export default IsoBoxSearchInfo;
 //# sourceMappingURL=IsoBoxSearchInfo.js.map

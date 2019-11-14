@@ -27,8 +27,25 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class ErrorsBase{extend(errors,config){if(!errors)return;let override=config?config.override:false;let publicOnly=config?config.publicOnly:false;for(const err in errors){if(!errors.hasOwnProperty(err)||this[err]&&!override)continue;if(publicOnly&&errors[err].indexOf('public_')===-1)continue;this[err]=errors[err];}}}export default ErrorsBase;
+ */
+class ErrorsBase {
+    extend(errors, config) {
+        if (!errors) return;
+
+        let override = config ? config.override : false;
+        let publicOnly = config ? config.publicOnly : false;
+
+        for (const err in errors) {
+            if (!errors.hasOwnProperty(err) || this[err] && !override) continue;
+            if (publicOnly && errors[err].indexOf('public_') === -1) continue;
+            this[err] = errors[err];
+        }
+    }
+}
+
+export default ErrorsBase;
 //# sourceMappingURL=ErrorsBase.js.map

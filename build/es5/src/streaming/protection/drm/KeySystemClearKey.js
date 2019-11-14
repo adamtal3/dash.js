@@ -27,7 +27,24 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import KeyPair from'../vo/KeyPair';import ClearKeyKeySet from'../vo/ClearKeyKeySet';import CommonEncryption from'../CommonEncryption';import ProtectionConstants from'../../constants/ProtectionConstants';const uuid='e2719d58-a985-b3c9-781a-b030af78d30e';const systemString=ProtectionConstants.CLEARKEY_KEYSTEM_STRING;const schemeIdURI='urn:uuid:'+uuid;function KeySystemClearKey(config){config=config||{};let instance;const BASE64=config.BASE64;/**
+ */
+
+import KeyPair from '../vo/KeyPair';
+import ClearKeyKeySet from '../vo/ClearKeyKeySet';
+import CommonEncryption from '../CommonEncryption';
+import ProtectionConstants from '../../constants/ProtectionConstants';
+
+const uuid = 'e2719d58-a985-b3c9-781a-b030af78d30e';
+const systemString = ProtectionConstants.CLEARKEY_KEYSTEM_STRING;
+const schemeIdURI = 'urn:uuid:' + uuid;
+
+function KeySystemClearKey(config) {
+
+    config = config || {};
+    let instance;
+    const BASE64 = config.BASE64;
+
+    /**
      * Returns desired clearkeys (as specified in the CDM message) from protection data
      *
      * @param {ProtectionData} protectionData the protection data
@@ -36,8 +53,68 @@
      * @throws {Error} if a keyID specified in the CDM message was not found in the
      * protection data
      * @memberof KeySystemClearKey
-     */function getClearKeysFromProtectionData(protectionData,message){let clearkeySet=null;if(protectionData){// ClearKey is the only system that does not require a license server URL, so we
-// handle it here when keys are specified in protection data
-const jsonMsg=JSON.parse(String.fromCharCode.apply(null,new Uint8Array(message)));const keyPairs=[];for(let i=0;i<jsonMsg.kids.length;i++){const clearkeyID=jsonMsg.kids[i];const clearkey=protectionData.clearkeys&&protectionData.clearkeys.hasOwnProperty(clearkeyID)?protectionData.clearkeys[clearkeyID]:null;if(!clearkey){throw new Error('DRM: ClearKey keyID ('+clearkeyID+') is not known!');}// KeyIDs from CDM are not base64 padded.  Keys may or may not be padded
-keyPairs.push(new KeyPair(clearkeyID,clearkey));}clearkeySet=new ClearKeyKeySet(keyPairs);}return clearkeySet;}function getInitData(cp){return CommonEncryption.parseInitDataFromContentProtection(cp,BASE64);}function getRequestHeadersFromMessage()/*message*/{return null;}function getLicenseRequestFromMessage(message){return new Uint8Array(message);}function getLicenseServerURLFromInitData()/*initData*/{return null;}function getCDMData(){return null;}function getSessionId()/*cp*/{return null;}instance={uuid:uuid,schemeIdURI:schemeIdURI,systemString:systemString,getInitData:getInitData,getRequestHeadersFromMessage:getRequestHeadersFromMessage,getLicenseRequestFromMessage:getLicenseRequestFromMessage,getLicenseServerURLFromInitData:getLicenseServerURLFromInitData,getCDMData:getCDMData,getSessionId:getSessionId,getClearKeysFromProtectionData:getClearKeysFromProtectionData};return instance;}KeySystemClearKey.__dashjs_factory_name='KeySystemClearKey';export default dashjs.FactoryMaker.getSingletonFactory(KeySystemClearKey);/* jshint ignore:line */
+     */
+    function getClearKeysFromProtectionData(protectionData, message) {
+        let clearkeySet = null;
+        if (protectionData) {
+            // ClearKey is the only system that does not require a license server URL, so we
+            // handle it here when keys are specified in protection data
+            const jsonMsg = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(message)));
+            const keyPairs = [];
+            for (let i = 0; i < jsonMsg.kids.length; i++) {
+                const clearkeyID = jsonMsg.kids[i];
+                const clearkey = protectionData.clearkeys && protectionData.clearkeys.hasOwnProperty(clearkeyID) ? protectionData.clearkeys[clearkeyID] : null;
+                if (!clearkey) {
+                    throw new Error('DRM: ClearKey keyID (' + clearkeyID + ') is not known!');
+                }
+                // KeyIDs from CDM are not base64 padded.  Keys may or may not be padded
+                keyPairs.push(new KeyPair(clearkeyID, clearkey));
+            }
+            clearkeySet = new ClearKeyKeySet(keyPairs);
+        }
+        return clearkeySet;
+    }
+
+    function getInitData(cp) {
+        return CommonEncryption.parseInitDataFromContentProtection(cp, BASE64);
+    }
+
+    function getRequestHeadersFromMessage() /*message*/{
+        return null;
+    }
+
+    function getLicenseRequestFromMessage(message) {
+        return new Uint8Array(message);
+    }
+
+    function getLicenseServerURLFromInitData() /*initData*/{
+        return null;
+    }
+
+    function getCDMData() {
+        return null;
+    }
+
+    function getSessionId() /*cp*/{
+        return null;
+    }
+
+    instance = {
+        uuid: uuid,
+        schemeIdURI: schemeIdURI,
+        systemString: systemString,
+        getInitData: getInitData,
+        getRequestHeadersFromMessage: getRequestHeadersFromMessage,
+        getLicenseRequestFromMessage: getLicenseRequestFromMessage,
+        getLicenseServerURLFromInitData: getLicenseServerURLFromInitData,
+        getCDMData: getCDMData,
+        getSessionId: getSessionId,
+        getClearKeysFromProtectionData: getClearKeysFromProtectionData
+    };
+
+    return instance;
+}
+
+KeySystemClearKey.__dashjs_factory_name = 'KeySystemClearKey';
+export default dashjs.FactoryMaker.getSingletonFactory(KeySystemClearKey); /* jshint ignore:line */
 //# sourceMappingURL=KeySystemClearKey.js.map

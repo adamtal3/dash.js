@@ -191,7 +191,7 @@ module.exports = function (grunt) {
         babel: {
             options: {
                 sourceMap: true,
-                compact: true
+                compact: false
             },
             es5: {
                 files: [{
@@ -391,8 +391,8 @@ module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
     grunt.loadNpmTasks('grunt-string-replace');
     grunt.registerTask('default', ['dist', 'test']);
-    grunt.registerTask('dist', ['clean', 'jshint', 'jscs', 'browserify:mediaplayer', 'browserify:protection', 'browserify:reporting', 'browserify:mss', 'browserify:all', 'babel:es5', 'minimize', 'copy:dist']);
-    grunt.registerTask('minimize', ['exorcise', 'githash', 'uglify']);
+    grunt.registerTask('dist', ['clean', 'jshint', 'jscs', 'browserify:mediaplayer', 'browserify:protection', 'browserify:reporting', 'browserify:mss', 'browserify:all', 'babel:es5', 'copy:dist']); //, 'minimize'
+    grunt.registerTask('minimize', ['exorcise', 'githash']); //, 'uglify'
     grunt.registerTask('test', ['mocha_istanbul:test']);
     grunt.registerTask('watch', ['browserify:watch']);
     grunt.registerTask('watch-dev', ['browserify:watch_dev']);

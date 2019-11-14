@@ -27,6 +27,72 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import BufferLevel from'./handlers/BufferLevelHandler';import DVBErrors from'./handlers/DVBErrorsHandler';import HttpList from'./handlers/HttpListHandler';import GenericMetricHandler from'./handlers/GenericMetricHandler';function MetricsHandlerFactory(config){config=config||{};let instance;const debug=config.debug;// group 1: key, [group 3: n [, group 5: type]]
-let keyRegex=/([a-zA-Z]*)(\(([0-9]*)(\,\s*([a-zA-Z]*))?\))?/;const context=this.context;let knownFactoryProducts={BufferLevel:BufferLevel,DVBErrors:DVBErrors,HttpList:HttpList,PlayList:GenericMetricHandler,RepSwitchList:GenericMetricHandler,TcpList:GenericMetricHandler};function create(listType,reportingController){var matches=listType.match(keyRegex);var handler;if(!matches){return;}try{handler=knownFactoryProducts[matches[1]](context).create({eventBus:config.eventBus,metricsConstants:config.metricsConstants});handler.initialize(matches[1],reportingController,matches[3],matches[5]);}catch(e){handler=null;debug.error(`MetricsHandlerFactory: Could not create handler for type ${matches[1]} with args ${matches[3]}, ${matches[5]} (${e.message})`);}return handler;}function register(key,handler){knownFactoryProducts[key]=handler;}function unregister(key){delete knownFactoryProducts[key];}instance={create:create,register:register,unregister:unregister};return instance;}MetricsHandlerFactory.__dashjs_factory_name='MetricsHandlerFactory';export default dashjs.FactoryMaker.getSingletonFactory(MetricsHandlerFactory);/* jshint ignore:line */
+ */
+
+import BufferLevel from './handlers/BufferLevelHandler';
+import DVBErrors from './handlers/DVBErrorsHandler';
+import HttpList from './handlers/HttpListHandler';
+import GenericMetricHandler from './handlers/GenericMetricHandler';
+
+function MetricsHandlerFactory(config) {
+
+    config = config || {};
+    let instance;
+    const debug = config.debug;
+
+    // group 1: key, [group 3: n [, group 5: type]]
+    let keyRegex = /([a-zA-Z]*)(\(([0-9]*)(\,\s*([a-zA-Z]*))?\))?/;
+
+    const context = this.context;
+    let knownFactoryProducts = {
+        BufferLevel: BufferLevel,
+        DVBErrors: DVBErrors,
+        HttpList: HttpList,
+        PlayList: GenericMetricHandler,
+        RepSwitchList: GenericMetricHandler,
+        TcpList: GenericMetricHandler
+    };
+
+    function create(listType, reportingController) {
+        var matches = listType.match(keyRegex);
+        var handler;
+
+        if (!matches) {
+            return;
+        }
+
+        try {
+            handler = knownFactoryProducts[matches[1]](context).create({
+                eventBus: config.eventBus,
+                metricsConstants: config.metricsConstants
+            });
+
+            handler.initialize(matches[1], reportingController, matches[3], matches[5]);
+        } catch (e) {
+            handler = null;
+            debug.error(`MetricsHandlerFactory: Could not create handler for type ${matches[1]} with args ${matches[3]}, ${matches[5]} (${e.message})`);
+        }
+
+        return handler;
+    }
+
+    function register(key, handler) {
+        knownFactoryProducts[key] = handler;
+    }
+
+    function unregister(key) {
+        delete knownFactoryProducts[key];
+    }
+
+    instance = {
+        create: create,
+        register: register,
+        unregister: unregister
+    };
+
+    return instance;
+}
+
+MetricsHandlerFactory.__dashjs_factory_name = 'MetricsHandlerFactory';
+export default dashjs.FactoryMaker.getSingletonFactory(MetricsHandlerFactory); /* jshint ignore:line */
 //# sourceMappingURL=MetricsHandlerFactory.js.map

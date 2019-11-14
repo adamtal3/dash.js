@@ -27,7 +27,9 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+
+/**
  * Static methods for rounding decimals
  *
  * Modified version of the CC0-licenced example at:
@@ -35,22 +37,48 @@
  *
  * @export
  * @class Round10
- */export default class Round10{/**
+ */
+export default class Round10 {
+    /**
     * Decimal round.
     *
     * @param {Number}  value The number.
     * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
     * @returns {Number} The adjusted value.
-    */static round10(value,exp){return _decimalAdjust('round',value,exp);}}/**
+    */
+    static round10(value, exp) {
+        return _decimalAdjust('round', value, exp);
+    }
+}
+
+/**
  * Decimal adjustment of a number.
  *
  * @param {String}  type  The type of adjustment.
  * @param {Number}  value The number.
  * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
  * @returns {Number} The adjusted value.
- */function _decimalAdjust(type,value,exp){// If the exp is undefined or zero...
-if(typeof exp==='undefined'||+exp===0){return Math[type](value);}value=+value;exp=+exp;// If the value is not a number or the exp is not an integer...
-if(value===null||isNaN(value)||!(typeof exp==='number'&&exp%1===0)){return NaN;}// Shift
-value=value.toString().split('e');value=Math[type](+(value[0]+'e'+(value[1]?+value[1]-exp:-exp)));// Shift back
-value=value.toString().split('e');return+(value[0]+'e'+(value[1]?+value[1]+exp:exp));}
+ */
+function _decimalAdjust(type, value, exp) {
+    // If the exp is undefined or zero...
+    if (typeof exp === 'undefined' || +exp === 0) {
+        return Math[type](value);
+    }
+
+    value = +value;
+    exp = +exp;
+
+    // If the value is not a number or the exp is not an integer...
+    if (value === null || isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+        return NaN;
+    }
+
+    // Shift
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? +value[1] - exp : -exp)));
+
+    // Shift back
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? +value[1] + exp : exp));
+}
 //# sourceMappingURL=Round10.js.map

@@ -27,7 +27,20 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @classdesc a SegmentValuesMap type for input to objectiron
- */import MapNode from'./MapNode';import DashConstants from'../../constants/DashConstants';class SegmentValuesMap extends MapNode{constructor(){const commonProperties=[DashConstants.SEGMENT_BASE,DashConstants.SEGMENT_TEMPLATE,DashConstants.SEGMENT_LIST];super(DashConstants.PERIOD,commonProperties,[new MapNode(DashConstants.ADAPTATION_SET,commonProperties,[new MapNode(DashConstants.REPRESENTATION,commonProperties)])]);}}export default SegmentValuesMap;
+ */
+import MapNode from './MapNode';
+import DashConstants from '../../constants/DashConstants';
+
+class SegmentValuesMap extends MapNode {
+    constructor() {
+        const commonProperties = [DashConstants.SEGMENT_BASE, DashConstants.SEGMENT_TEMPLATE, DashConstants.SEGMENT_LIST];
+
+        super(DashConstants.PERIOD, commonProperties, [new MapNode(DashConstants.ADAPTATION_SET, commonProperties, [new MapNode(DashConstants.REPRESENTATION, commonProperties)])]);
+    }
+}
+
+export default SegmentValuesMap;
 //# sourceMappingURL=SegmentValuesMap.js.map

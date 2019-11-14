@@ -27,11 +27,58 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import EventsBase from'./EventsBase';/**
+ */
+import EventsBase from './EventsBase';
+
+/**
  * These are internal events that should not be needed at the player level.
  * If you find and event in here that you would like access to from MediaPlayer level
  * please add an issue at https://github.com/Dash-Industry-Forum/dash.js/issues/new
  * @class
  * @ignore
- */class CoreEvents extends EventsBase{constructor(){super();this.BUFFERING_COMPLETED='bufferingCompleted';this.BUFFER_CLEARED='bufferCleared';this.BUFFER_LEVEL_UPDATED='bufferLevelUpdated';this.BYTES_APPENDED='bytesAppended';this.BYTES_APPENDED_END_FRAGMENT='bytesAppendedEndFragment';this.CHECK_FOR_EXISTENCE_COMPLETED='checkForExistenceCompleted';this.CURRENT_TRACK_CHANGED='currentTrackChanged';this.DATA_UPDATE_COMPLETED='dataUpdateCompleted';this.DATA_UPDATE_STARTED='dataUpdateStarted';this.INITIALIZATION_LOADED='initializationLoaded';this.INIT_FRAGMENT_LOADED='initFragmentLoaded';this.INIT_REQUESTED='initRequested';this.INTERNAL_MANIFEST_LOADED='internalManifestLoaded';this.LIVE_EDGE_SEARCH_COMPLETED='liveEdgeSearchCompleted';this.LOADING_COMPLETED='loadingCompleted';this.LOADING_PROGRESS='loadingProgress';this.LOADING_DATA_PROGRESS='loadingDataProgress';this.LOADING_ABANDONED='loadingAborted';this.MANIFEST_UPDATED='manifestUpdated';this.MEDIA_FRAGMENT_LOADED='mediaFragmentLoaded';this.QUOTA_EXCEEDED='quotaExceeded';this.REPRESENTATION_UPDATED='representationUpdated';this.SEGMENTS_LOADED='segmentsLoaded';this.SERVICE_LOCATION_BLACKLIST_ADD='serviceLocationBlacklistAdd';this.SERVICE_LOCATION_BLACKLIST_CHANGED='serviceLocationBlacklistChanged';this.SOURCEBUFFER_REMOVE_COMPLETED='sourceBufferRemoveCompleted';this.STREAMS_COMPOSED='streamsComposed';this.STREAM_BUFFERING_COMPLETED='streamBufferingCompleted';this.STREAM_COMPLETED='streamCompleted';this.TEXT_TRACKS_QUEUE_INITIALIZED='textTracksQueueInitialized';this.TIMED_TEXT_REQUESTED='timedTextRequested';this.TIME_SYNCHRONIZATION_COMPLETED='timeSynchronizationComplete';this.URL_RESOLUTION_FAILED='urlResolutionFailed';this.VIDEO_CHUNK_RECEIVED='videoChunkReceived';this.WALLCLOCK_TIME_UPDATED='wallclockTimeUpdated';this.XLINK_ELEMENT_LOADED='xlinkElementLoaded';this.XLINK_READY='xlinkReady';}}export default CoreEvents;
+ */
+class CoreEvents extends EventsBase {
+    constructor() {
+        super();
+        this.BUFFERING_COMPLETED = 'bufferingCompleted';
+        this.BUFFER_CLEARED = 'bufferCleared';
+        this.BUFFER_LEVEL_UPDATED = 'bufferLevelUpdated';
+        this.BYTES_APPENDED = 'bytesAppended';
+        this.BYTES_APPENDED_END_FRAGMENT = 'bytesAppendedEndFragment';
+        this.CHECK_FOR_EXISTENCE_COMPLETED = 'checkForExistenceCompleted';
+        this.CURRENT_TRACK_CHANGED = 'currentTrackChanged';
+        this.DATA_UPDATE_COMPLETED = 'dataUpdateCompleted';
+        this.DATA_UPDATE_STARTED = 'dataUpdateStarted';
+        this.INITIALIZATION_LOADED = 'initializationLoaded';
+        this.INIT_FRAGMENT_LOADED = 'initFragmentLoaded';
+        this.INIT_REQUESTED = 'initRequested';
+        this.INTERNAL_MANIFEST_LOADED = 'internalManifestLoaded';
+        this.LIVE_EDGE_SEARCH_COMPLETED = 'liveEdgeSearchCompleted';
+        this.LOADING_COMPLETED = 'loadingCompleted';
+        this.LOADING_PROGRESS = 'loadingProgress';
+        this.LOADING_DATA_PROGRESS = 'loadingDataProgress';
+        this.LOADING_ABANDONED = 'loadingAborted';
+        this.MANIFEST_UPDATED = 'manifestUpdated';
+        this.MEDIA_FRAGMENT_LOADED = 'mediaFragmentLoaded';
+        this.QUOTA_EXCEEDED = 'quotaExceeded';
+        this.REPRESENTATION_UPDATED = 'representationUpdated';
+        this.SEGMENTS_LOADED = 'segmentsLoaded';
+        this.SERVICE_LOCATION_BLACKLIST_ADD = 'serviceLocationBlacklistAdd';
+        this.SERVICE_LOCATION_BLACKLIST_CHANGED = 'serviceLocationBlacklistChanged';
+        this.SOURCEBUFFER_REMOVE_COMPLETED = 'sourceBufferRemoveCompleted';
+        this.STREAMS_COMPOSED = 'streamsComposed';
+        this.STREAM_BUFFERING_COMPLETED = 'streamBufferingCompleted';
+        this.STREAM_COMPLETED = 'streamCompleted';
+        this.TEXT_TRACKS_QUEUE_INITIALIZED = 'textTracksQueueInitialized';
+        this.TIMED_TEXT_REQUESTED = 'timedTextRequested';
+        this.TIME_SYNCHRONIZATION_COMPLETED = 'timeSynchronizationComplete';
+        this.URL_RESOLUTION_FAILED = 'urlResolutionFailed';
+        this.VIDEO_CHUNK_RECEIVED = 'videoChunkReceived';
+        this.WALLCLOCK_TIME_UPDATED = 'wallclockTimeUpdated';
+        this.XLINK_ELEMENT_LOADED = 'xlinkElementLoaded';
+        this.XLINK_READY = 'xlinkReady';
+    }
+}
+
+export default CoreEvents;
 //# sourceMappingURL=CoreEvents.js.map

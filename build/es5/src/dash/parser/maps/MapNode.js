@@ -27,7 +27,37 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @classdesc a node at some level in a ValueMap
- */import CommonProperty from'./CommonProperty';class MapNode{constructor(name,properties,children){this._name=name||'';this._properties=[];this._children=children||[];if(Array.isArray(properties)){properties.forEach(p=>{this._properties.push(new CommonProperty(p));});}}get name(){return this._name;}get children(){return this._children;}get properties(){return this._properties;}}export default MapNode;
+ */
+import CommonProperty from './CommonProperty';
+
+class MapNode {
+    constructor(name, properties, children) {
+        this._name = name || '';
+        this._properties = [];
+        this._children = children || [];
+
+        if (Array.isArray(properties)) {
+            properties.forEach(p => {
+                this._properties.push(new CommonProperty(p));
+            });
+        }
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    get children() {
+        return this._children;
+    }
+
+    get properties() {
+        return this._properties;
+    }
+}
+
+export default MapNode;
 //# sourceMappingURL=MapNode.js.map

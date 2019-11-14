@@ -27,8 +27,48 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @classdesc matches and converts xs:duration to seconds
- */import BaseMatcher from'./BaseMatcher';import Constants from'../../../streaming/constants/Constants';import DashConstants from'../../constants/DashConstants';const durationRegex=/^([-])?P(([\d.]*)Y)?(([\d.]*)M)?(([\d.]*)D)?T?(([\d.]*)H)?(([\d.]*)M)?(([\d.]*)S)?/;const SECONDS_IN_YEAR=365*24*60*60;const SECONDS_IN_MONTH=30*24*60*60;const SECONDS_IN_DAY=24*60*60;const SECONDS_IN_HOUR=60*60;const SECONDS_IN_MIN=60;class DurationMatcher extends BaseMatcher{constructor(){super(attr=>{const attributeList=[DashConstants.MIN_BUFFER_TIME,DashConstants.MEDIA_PRESENTATION_DURATION,DashConstants.MINIMUM_UPDATE_PERIOD,DashConstants.TIMESHIFT_BUFFER_DEPTH,DashConstants.MAX_SEGMENT_DURATION,DashConstants.MAX_SUBSEGMENT_DURATION,Constants.SUGGESTED_PRESENTATION_DELAY,DashConstants.START,Constants.START_TIME,DashConstants.DURATION];const len=attributeList.length;for(let i=0;i<len;i++){if(attr.nodeName===attributeList[i]){return durationRegex.test(attr.value);}}return false;},str=>{//str = "P10Y10M10DT10H10M10.1S";
-const match=durationRegex.exec(str);let result=parseFloat(match[2]||0)*SECONDS_IN_YEAR+parseFloat(match[4]||0)*SECONDS_IN_MONTH+parseFloat(match[6]||0)*SECONDS_IN_DAY+parseFloat(match[8]||0)*SECONDS_IN_HOUR+parseFloat(match[10]||0)*SECONDS_IN_MIN+parseFloat(match[12]||0);if(match[1]!==undefined){result=-result;}return result;});}}export default DurationMatcher;
+ */
+import BaseMatcher from './BaseMatcher';
+import Constants from '../../../streaming/constants/Constants';
+import DashConstants from '../../constants/DashConstants';
+
+const durationRegex = /^([-])?P(([\d.]*)Y)?(([\d.]*)M)?(([\d.]*)D)?T?(([\d.]*)H)?(([\d.]*)M)?(([\d.]*)S)?/;
+
+const SECONDS_IN_YEAR = 365 * 24 * 60 * 60;
+const SECONDS_IN_MONTH = 30 * 24 * 60 * 60;
+const SECONDS_IN_DAY = 24 * 60 * 60;
+const SECONDS_IN_HOUR = 60 * 60;
+const SECONDS_IN_MIN = 60;
+
+class DurationMatcher extends BaseMatcher {
+    constructor() {
+        super(attr => {
+            const attributeList = [DashConstants.MIN_BUFFER_TIME, DashConstants.MEDIA_PRESENTATION_DURATION, DashConstants.MINIMUM_UPDATE_PERIOD, DashConstants.TIMESHIFT_BUFFER_DEPTH, DashConstants.MAX_SEGMENT_DURATION, DashConstants.MAX_SUBSEGMENT_DURATION, Constants.SUGGESTED_PRESENTATION_DELAY, DashConstants.START, Constants.START_TIME, DashConstants.DURATION];
+            const len = attributeList.length;
+
+            for (let i = 0; i < len; i++) {
+                if (attr.nodeName === attributeList[i]) {
+                    return durationRegex.test(attr.value);
+                }
+            }
+
+            return false;
+        }, str => {
+            //str = "P10Y10M10DT10H10M10.1S";
+            const match = durationRegex.exec(str);
+            let result = parseFloat(match[2] || 0) * SECONDS_IN_YEAR + parseFloat(match[4] || 0) * SECONDS_IN_MONTH + parseFloat(match[6] || 0) * SECONDS_IN_DAY + parseFloat(match[8] || 0) * SECONDS_IN_HOUR + parseFloat(match[10] || 0) * SECONDS_IN_MIN + parseFloat(match[12] || 0);
+
+            if (match[1] !== undefined) {
+                result = -result;
+            }
+
+            return result;
+        });
+    }
+}
+
+export default DurationMatcher;
 //# sourceMappingURL=DurationMatcher.js.map

@@ -27,12 +27,28 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import ErrorsBase from'../../core/errors/ErrorsBase';/**
+ */
+import ErrorsBase from '../../core/errors/ErrorsBase';
+/**
  * @class
  *
- */class MssErrors extends ErrorsBase{constructor(){super();/**
-         * Error code returned when no tfrf box is detected in MSS live stream
-         */this.MSS_NO_TFRF_CODE=200;this.MSS_UNSUPPORTED_CODEC_CODE=201;/**
-         * Error message returned when no tfrf box is detected in MSS live stream
-         */this.MSS_NO_TFRF_MESSAGE='Missing tfrf in live media segment';this.MSS_UNSUPPORTED_CODEC_MESSAGE='Unsupported codec';}}let mssErrors=new MssErrors();export default mssErrors;
+ */
+class MssErrors extends ErrorsBase {
+  constructor() {
+    super();
+    /**
+     * Error code returned when no tfrf box is detected in MSS live stream
+     */
+    this.MSS_NO_TFRF_CODE = 200;
+    this.MSS_UNSUPPORTED_CODEC_CODE = 201;
+    /**
+     * Error message returned when no tfrf box is detected in MSS live stream
+     */
+    this.MSS_NO_TFRF_MESSAGE = 'Missing tfrf in live media segment';
+    this.MSS_UNSUPPORTED_CODEC_MESSAGE = 'Unsupported codec';
+  }
+}
+
+let mssErrors = new MssErrors();
+export default mssErrors;
 //# sourceMappingURL=MssErrors.js.map

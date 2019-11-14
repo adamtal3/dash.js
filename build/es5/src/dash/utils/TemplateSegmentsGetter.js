@@ -27,5 +27,69 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import FactoryMaker from'../../core/FactoryMaker';import{replaceTokenForTemplate,getIndexBasedSegment,decideSegmentListRangeForTemplate}from'./SegmentsUtils';function TemplateSegmentsGetter(config,isDynamic){const timelineConverter=config.timelineConverter;let instance;function getSegmentsFromTemplate(representation,requestedTime,index,availabilityUpperLimit){const template=representation.adaptation.period.mpd.manifest.Period_asArray[representation.adaptation.period.index].AdaptationSet_asArray[representation.adaptation.index].Representation_asArray[representation.index].SegmentTemplate;const duration=representation.segmentDuration;const availabilityWindow=representation.segmentAvailabilityRange;const segments=[];let url=null;let seg=null;let segmentRange,periodSegIdx,startIdx,endIdx,start;start=representation.startNumber;if(isNaN(duration)&&!isDynamic){segmentRange={start:start,end:start};}else{segmentRange=decideSegmentListRangeForTemplate(timelineConverter,isDynamic,representation,requestedTime,index,availabilityUpperLimit);}startIdx=segmentRange.start;endIdx=segmentRange.end;for(periodSegIdx=startIdx;periodSegIdx<=endIdx;periodSegIdx++){seg=getIndexBasedSegment(timelineConverter,isDynamic,representation,periodSegIdx);seg.replacementTime=(start+periodSegIdx-1)*representation.segmentDuration;url=template.media;url=replaceTokenForTemplate(url,'Number',seg.replacementNumber);url=replaceTokenForTemplate(url,'Time',seg.replacementTime);seg.media=url;segments.push(seg);seg=null;}if(isNaN(duration)){representation.availableSegmentsNumber=1;}else{representation.availableSegmentsNumber=Math.ceil((availabilityWindow.end-availabilityWindow.start)/duration);}return segments;}instance={getSegments:getSegmentsFromTemplate};return instance;}TemplateSegmentsGetter.__dashjs_factory_name='TemplateSegmentsGetter';const factory=FactoryMaker.getClassFactory(TemplateSegmentsGetter);export default factory;
+ */
+
+import FactoryMaker from '../../core/FactoryMaker';
+
+import { replaceTokenForTemplate, getIndexBasedSegment, decideSegmentListRangeForTemplate } from './SegmentsUtils';
+
+function TemplateSegmentsGetter(config, isDynamic) {
+
+    const timelineConverter = config.timelineConverter;
+
+    let instance;
+
+    function getSegmentsFromTemplate(representation, requestedTime, index, availabilityUpperLimit) {
+        const template = representation.adaptation.period.mpd.manifest.Period_asArray[representation.adaptation.period.index].AdaptationSet_asArray[representation.adaptation.index].Representation_asArray[representation.index].SegmentTemplate;
+        const duration = representation.segmentDuration;
+        const availabilityWindow = representation.segmentAvailabilityRange;
+
+        const segments = [];
+        let url = null;
+        let seg = null;
+
+        let segmentRange, periodSegIdx, startIdx, endIdx, start;
+
+        start = representation.startNumber;
+
+        if (isNaN(duration) && !isDynamic) {
+            segmentRange = { start: start, end: start };
+        } else {
+            segmentRange = decideSegmentListRangeForTemplate(timelineConverter, isDynamic, representation, requestedTime, index, availabilityUpperLimit);
+        }
+
+        startIdx = segmentRange.start;
+        endIdx = segmentRange.end;
+
+        for (periodSegIdx = startIdx; periodSegIdx <= endIdx; periodSegIdx++) {
+            seg = getIndexBasedSegment(timelineConverter, isDynamic, representation, periodSegIdx);
+            seg.replacementTime = (start + periodSegIdx - 1) * representation.segmentDuration;
+            url = template.media;
+            url = replaceTokenForTemplate(url, 'Number', seg.replacementNumber);
+            url = replaceTokenForTemplate(url, 'Time', seg.replacementTime);
+            seg.media = url;
+
+            segments.push(seg);
+            seg = null;
+        }
+
+        if (isNaN(duration)) {
+            representation.availableSegmentsNumber = 1;
+        } else {
+            representation.availableSegmentsNumber = Math.ceil((availabilityWindow.end - availabilityWindow.start) / duration);
+        }
+
+        return segments;
+    }
+
+    instance = {
+        getSegments: getSegmentsFromTemplate
+    };
+
+    return instance;
+}
+
+TemplateSegmentsGetter.__dashjs_factory_name = 'TemplateSegmentsGetter';
+const factory = FactoryMaker.getClassFactory(TemplateSegmentsGetter);
+export default factory;
 //# sourceMappingURL=TemplateSegmentsGetter.js.map

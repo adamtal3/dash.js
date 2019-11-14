@@ -27,20 +27,59 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+
+/**
  * @classdesc A collection of ClearKey encryption keys with an (optional) associated
  *  type
  * @ignore
- */class ClearKeyKeySet{/**
+ */
+class ClearKeyKeySet {
+    /**
      * @param {Array.<KeyPair>} keyPairs
      * @param {string} type the type of keys in this set.  One of either 'persistent'
      * or 'temporary'.  Can also be null or undefined.
      * @class
      * @ignore
-     */constructor(keyPairs,type){if(type&&type!=='persistent'&&type!=='temporary')throw new Error('Invalid ClearKey key set type!  Must be one of \'persistent\' or \'temporary\'');this.keyPairs=keyPairs;this.type=type;}/**
+     */
+    constructor(keyPairs, type) {
+        if (type && type !== 'persistent' && type !== 'temporary') throw new Error('Invalid ClearKey key set type!  Must be one of \'persistent\' or \'temporary\'');
+        this.keyPairs = keyPairs;
+        this.type = type;
+    }
+
+    /**
      * Convert this key set to its JSON Web Key (JWK) representation
      *
      * @return {ArrayBuffer} JWK object UTF-8 encoded as ArrayBuffer
-     */toJWK(){let i;let numKeys=this.keyPairs.length;let jwk={keys:[]};for(i=0;i<numKeys;i++){let key={kty:'oct',alg:'A128KW',kid:this.keyPairs[i].keyID,k:this.keyPairs[i].key};jwk.keys.push(key);}if(this.type){jwk.type=this.type;}let jwkString=JSON.stringify(jwk);const len=jwkString.length;// Convert JSON string to ArrayBuffer
-let buf=new ArrayBuffer(len);let bView=new Uint8Array(buf);for(i=0;i<len;i++)bView[i]=jwkString.charCodeAt(i);return buf;}}export default ClearKeyKeySet;
+     */
+    toJWK() {
+        let i;
+        let numKeys = this.keyPairs.length;
+        let jwk = { keys: [] };
+
+        for (i = 0; i < numKeys; i++) {
+            let key = {
+                kty: 'oct',
+                alg: 'A128KW',
+                kid: this.keyPairs[i].keyID,
+                k: this.keyPairs[i].key
+            };
+            jwk.keys.push(key);
+        }
+        if (this.type) {
+            jwk.type = this.type;
+        }
+        let jwkString = JSON.stringify(jwk);
+        const len = jwkString.length;
+
+        // Convert JSON string to ArrayBuffer
+        let buf = new ArrayBuffer(len);
+        let bView = new Uint8Array(buf);
+        for (i = 0; i < len; i++) bView[i] = jwkString.charCodeAt(i);
+        return buf;
+    }
+}
+
+export default ClearKeyKeySet;
 //# sourceMappingURL=ClearKeyKeySet.js.map

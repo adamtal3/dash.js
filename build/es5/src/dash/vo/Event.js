@@ -27,9 +27,21 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class Event{constructor(){this.duration=NaN;this.presentationTime=NaN;this.id=NaN;this.messageData='';this.eventStream=null;this.presentationTimeDelta=NaN;// Specific EMSG Box parameter
-}}export default Event;
+ */
+class Event {
+  constructor() {
+    this.duration = NaN;
+    this.presentationTime = NaN;
+    this.id = NaN;
+    this.messageData = '';
+    this.eventStream = null;
+    this.presentationTimeDelta = NaN; // Specific EMSG Box parameter
+  }
+}
+
+export default Event;
 //# sourceMappingURL=Event.js.map

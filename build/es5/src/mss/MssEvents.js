@@ -27,5 +27,18 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import EventsBase from'../core/events/EventsBase';class MssEvents extends EventsBase{constructor(){super();this.FRAGMENT_INFO_LOADING_COMPLETED='fragmentInfoLoadingCompleted';}}let mssEvents=new MssEvents();export default mssEvents;
+ */
+import EventsBase from '../core/events/EventsBase';
+
+class MssEvents extends EventsBase {
+
+    constructor() {
+        super();
+
+        this.FRAGMENT_INFO_LOADING_COMPLETED = 'fragmentInfoLoadingCompleted';
+    }
+}
+
+let mssEvents = new MssEvents();
+export default mssEvents;
 //# sourceMappingURL=MssEvents.js.map

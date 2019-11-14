@@ -27,5 +27,18 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import EventsBase from'../../core/events/EventsBase';class MetricsReportingEvents extends EventsBase{constructor(){super();this.METRICS_INITIALISATION_COMPLETE='internal_metricsReportingInitialized';this.BECAME_REPORTING_PLAYER='internal_becameReportingPlayer';}}let metricsReportingEvents=new MetricsReportingEvents();export default metricsReportingEvents;
+ */
+import EventsBase from '../../core/events/EventsBase';
+
+class MetricsReportingEvents extends EventsBase {
+    constructor() {
+        super();
+
+        this.METRICS_INITIALISATION_COMPLETE = 'internal_metricsReportingInitialized';
+        this.BECAME_REPORTING_PLAYER = 'internal_becameReportingPlayer';
+    }
+}
+
+let metricsReportingEvents = new MetricsReportingEvents();
+export default metricsReportingEvents;
 //# sourceMappingURL=MetricsReportingEvents.js.map

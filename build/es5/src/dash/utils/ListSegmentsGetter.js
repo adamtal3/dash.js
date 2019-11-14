@@ -27,5 +27,60 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import FactoryMaker from'../../core/FactoryMaker';import{getIndexBasedSegment,decideSegmentListRangeForTemplate}from'./SegmentsUtils';function ListSegmentsGetter(config,isDynamic){config=config||{};const timelineConverter=config.timelineConverter;let instance;function getSegmentsFromList(representation,requestedTime,index,availabilityUpperLimit){const list=representation.adaptation.period.mpd.manifest.Period_asArray[representation.adaptation.period.index].AdaptationSet_asArray[representation.adaptation.index].Representation_asArray[representation.index].SegmentList;const len=list.SegmentURL_asArray.length;const segments=[];let periodSegIdx,seg,s,range,startIdx,endIdx,start;start=representation.startNumber;range=decideSegmentListRangeForTemplate(timelineConverter,isDynamic,representation,requestedTime,index,availabilityUpperLimit);startIdx=Math.max(range.start,0);endIdx=Math.min(range.end,list.SegmentURL_asArray.length-1);for(periodSegIdx=startIdx;periodSegIdx<=endIdx;periodSegIdx++){s=list.SegmentURL_asArray[periodSegIdx];seg=getIndexBasedSegment(timelineConverter,isDynamic,representation,periodSegIdx);seg.replacementTime=(start+periodSegIdx-1)*representation.segmentDuration;seg.media=s.media?s.media:'';seg.mediaRange=s.mediaRange;seg.index=s.index;seg.indexRange=s.indexRange;segments.push(seg);seg=null;}representation.availableSegmentsNumber=len;return segments;}instance={getSegments:getSegmentsFromList};return instance;}ListSegmentsGetter.__dashjs_factory_name='ListSegmentsGetter';const factory=FactoryMaker.getClassFactory(ListSegmentsGetter);export default factory;
+ */
+
+import FactoryMaker from '../../core/FactoryMaker';
+
+import { getIndexBasedSegment, decideSegmentListRangeForTemplate } from './SegmentsUtils';
+
+function ListSegmentsGetter(config, isDynamic) {
+
+    config = config || {};
+    const timelineConverter = config.timelineConverter;
+
+    let instance;
+
+    function getSegmentsFromList(representation, requestedTime, index, availabilityUpperLimit) {
+        const list = representation.adaptation.period.mpd.manifest.Period_asArray[representation.adaptation.period.index].AdaptationSet_asArray[representation.adaptation.index].Representation_asArray[representation.index].SegmentList;
+        const len = list.SegmentURL_asArray.length;
+
+        const segments = [];
+
+        let periodSegIdx, seg, s, range, startIdx, endIdx, start;
+
+        start = representation.startNumber;
+
+        range = decideSegmentListRangeForTemplate(timelineConverter, isDynamic, representation, requestedTime, index, availabilityUpperLimit);
+        startIdx = Math.max(range.start, 0);
+        endIdx = Math.min(range.end, list.SegmentURL_asArray.length - 1);
+
+        for (periodSegIdx = startIdx; periodSegIdx <= endIdx; periodSegIdx++) {
+            s = list.SegmentURL_asArray[periodSegIdx];
+
+            seg = getIndexBasedSegment(timelineConverter, isDynamic, representation, periodSegIdx);
+            seg.replacementTime = (start + periodSegIdx - 1) * representation.segmentDuration;
+            seg.media = s.media ? s.media : '';
+            seg.mediaRange = s.mediaRange;
+            seg.index = s.index;
+            seg.indexRange = s.indexRange;
+
+            segments.push(seg);
+            seg = null;
+        }
+
+        representation.availableSegmentsNumber = len;
+
+        return segments;
+    }
+
+    instance = {
+        getSegments: getSegmentsFromList
+    };
+
+    return instance;
+}
+
+ListSegmentsGetter.__dashjs_factory_name = 'ListSegmentsGetter';
+const factory = FactoryMaker.getClassFactory(ListSegmentsGetter);
+export default factory;
 //# sourceMappingURL=ListSegmentsGetter.js.map

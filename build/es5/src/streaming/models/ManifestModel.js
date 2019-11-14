@@ -27,5 +27,37 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import EventBus from'../../core/EventBus';import Events from'../../core/events/Events';import FactoryMaker from'../../core/FactoryMaker';function ManifestModel(){let context=this.context;let eventBus=EventBus(context).getInstance();let instance,manifest;function getValue(){return manifest;}function setValue(value){manifest=value;if(value){eventBus.trigger(Events.MANIFEST_LOADED,{data:value});}}instance={getValue:getValue,setValue:setValue};return instance;}ManifestModel.__dashjs_factory_name='ManifestModel';export default FactoryMaker.getSingletonFactory(ManifestModel);
+ */
+import EventBus from '../../core/EventBus';
+import Events from '../../core/events/Events';
+import FactoryMaker from '../../core/FactoryMaker';
+
+function ManifestModel() {
+
+    let context = this.context;
+    let eventBus = EventBus(context).getInstance();
+
+    let instance, manifest;
+
+    function getValue() {
+        return manifest;
+    }
+
+    function setValue(value) {
+        manifest = value;
+        if (value) {
+            eventBus.trigger(Events.MANIFEST_LOADED, { data: value });
+        }
+    }
+
+    instance = {
+        getValue: getValue,
+        setValue: setValue
+    };
+
+    return instance;
+}
+
+ManifestModel.__dashjs_factory_name = 'ManifestModel';
+export default FactoryMaker.getSingletonFactory(ManifestModel);
 //# sourceMappingURL=ManifestModel.js.map

@@ -27,7 +27,77 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import HandlerHelpers from'../../utils/HandlerHelpers';function BufferLevelHandler(config){config=config||{};let instance,reportingController,n,name,interval,lastReportedTime;let context=this.context;let handlerHelpers=HandlerHelpers(context).getInstance();let storedVOs=[];const metricsConstants=config.metricsConstants;function getLowestBufferLevelVO(){try{return Object.keys(storedVOs).map(key=>storedVOs[key]).reduce((a,b)=>{return a.level<b.level?a:b;});}catch(e){return;}}function intervalCallback(){let vo=getLowestBufferLevelVO();if(vo){if(lastReportedTime!==vo.t){lastReportedTime=vo.t;reportingController.report(name,vo);}}}function initialize(basename,rc,n_ms){if(rc){// this will throw if n is invalid, to be
-// caught by the initialize caller.
-n=handlerHelpers.validateN(n_ms);reportingController=rc;name=handlerHelpers.reconstructFullMetricName(basename,n_ms);interval=setInterval(intervalCallback,n);}}function reset(){clearInterval(interval);interval=null;n=0;reportingController=null;lastReportedTime=null;}function handleNewMetric(metric,vo,type){if(metric===metricsConstants.BUFFER_LEVEL){storedVOs[type]=vo;}}instance={initialize:initialize,reset:reset,handleNewMetric:handleNewMetric};return instance;}BufferLevelHandler.__dashjs_factory_name='BufferLevelHandler';export default dashjs.FactoryMaker.getClassFactory(BufferLevelHandler);/* jshint ignore:line */
+ */
+
+import HandlerHelpers from '../../utils/HandlerHelpers';
+
+function BufferLevelHandler(config) {
+
+    config = config || {};
+    let instance, reportingController, n, name, interval, lastReportedTime;
+
+    let context = this.context;
+    let handlerHelpers = HandlerHelpers(context).getInstance();
+
+    let storedVOs = [];
+
+    const metricsConstants = config.metricsConstants;
+
+    function getLowestBufferLevelVO() {
+        try {
+            return Object.keys(storedVOs).map(key => storedVOs[key]).reduce((a, b) => {
+                return a.level < b.level ? a : b;
+            });
+        } catch (e) {
+            return;
+        }
+    }
+
+    function intervalCallback() {
+        let vo = getLowestBufferLevelVO();
+
+        if (vo) {
+            if (lastReportedTime !== vo.t) {
+                lastReportedTime = vo.t;
+                reportingController.report(name, vo);
+            }
+        }
+    }
+
+    function initialize(basename, rc, n_ms) {
+        if (rc) {
+            // this will throw if n is invalid, to be
+            // caught by the initialize caller.
+            n = handlerHelpers.validateN(n_ms);
+            reportingController = rc;
+            name = handlerHelpers.reconstructFullMetricName(basename, n_ms);
+            interval = setInterval(intervalCallback, n);
+        }
+    }
+
+    function reset() {
+        clearInterval(interval);
+        interval = null;
+        n = 0;
+        reportingController = null;
+        lastReportedTime = null;
+    }
+
+    function handleNewMetric(metric, vo, type) {
+        if (metric === metricsConstants.BUFFER_LEVEL) {
+            storedVOs[type] = vo;
+        }
+    }
+
+    instance = {
+        initialize: initialize,
+        reset: reset,
+        handleNewMetric: handleNewMetric
+    };
+
+    return instance;
+}
+
+BufferLevelHandler.__dashjs_factory_name = 'BufferLevelHandler';
+export default dashjs.FactoryMaker.getClassFactory(BufferLevelHandler); /* jshint ignore:line */
 //# sourceMappingURL=BufferLevelHandler.js.map

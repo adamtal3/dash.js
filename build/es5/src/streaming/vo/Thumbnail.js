@@ -27,8 +27,20 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class Thumbnail{constructor(){this.url=null;this.width=null;this.height=null;this.x=null;this.y=null;}}export default Thumbnail;
+ */
+class Thumbnail {
+  constructor() {
+    this.url = null;
+    this.width = null;
+    this.height = null;
+    this.x = null;
+    this.y = null;
+  }
+}
+
+export default Thumbnail;
 //# sourceMappingURL=Thumbnail.js.map

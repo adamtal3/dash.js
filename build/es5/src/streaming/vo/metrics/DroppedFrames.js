@@ -27,15 +27,27 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
- */class DroppedFrames{/**
-     * @description This Object holds reference to DroppedFrames count and the time it was recorded.
-     */constructor(){/**
-         * Real-Time | Time of the measurement of the dropped frames.
-         * @public
-         */this.time=null;/**
-         * Number of dropped frames
-         * @public
-         */this.droppedFrames=null;}}export default DroppedFrames;
+ */
+class DroppedFrames {
+  /**
+   * @description This Object holds reference to DroppedFrames count and the time it was recorded.
+   */
+  constructor() {
+    /**
+     * Real-Time | Time of the measurement of the dropped frames.
+     * @public
+     */
+    this.time = null;
+    /**
+     * Number of dropped frames
+     * @public
+     */
+    this.droppedFrames = null;
+  }
+}
+
+export default DroppedFrames;
 //# sourceMappingURL=DroppedFrames.js.map

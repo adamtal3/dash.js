@@ -27,6 +27,84 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import FactoryMaker from'../../core/FactoryMaker';import Debug from'../../core/Debug';import ObjectIron from'./objectiron';import X2JS from'../../../externals/xml2json';import StringMatcher from'./matchers/StringMatcher';import DurationMatcher from'./matchers/DurationMatcher';import DateTimeMatcher from'./matchers/DateTimeMatcher';import NumericMatcher from'./matchers/NumericMatcher';import RepresentationBaseValuesMap from'./maps/RepresentationBaseValuesMap';import SegmentValuesMap from'./maps/SegmentValuesMap';function DashParser(){const context=this.context;let instance,logger,matchers,converter,objectIron;function setup(){logger=Debug(context).getInstance().getLogger(instance);matchers=[new DurationMatcher(),new DateTimeMatcher(),new NumericMatcher(),new StringMatcher()// last in list to take precedence over NumericMatcher
-];converter=new X2JS({escapeMode:false,attributePrefix:'',arrayAccessForm:'property',emptyNodeForm:'object',stripWhitespaces:false,enableToStringFunc:false,ignoreRoot:true,matchers:matchers});objectIron=ObjectIron(context).create({adaptationset:new RepresentationBaseValuesMap(),period:new SegmentValuesMap()});}function getMatchers(){return matchers;}function getIron(){return objectIron;}function parse(data){let manifest;const startTime=window.performance.now();manifest=converter.xml_str2json(data);if(!manifest){throw new Error('parsing the manifest failed');}const jsonTime=window.performance.now();objectIron.run(manifest);const ironedTime=window.performance.now();logger.info('Parsing complete: ( xml2json: '+(jsonTime-startTime).toPrecision(3)+'ms, objectiron: '+(ironedTime-jsonTime).toPrecision(3)+'ms, total: '+((ironedTime-startTime)/1000).toPrecision(3)+'s)');return manifest;}instance={parse:parse,getMatchers:getMatchers,getIron:getIron};setup();return instance;}DashParser.__dashjs_factory_name='DashParser';export default FactoryMaker.getClassFactory(DashParser);
+ */
+import FactoryMaker from '../../core/FactoryMaker';
+import Debug from '../../core/Debug';
+import ObjectIron from './objectiron';
+import X2JS from '../../../externals/xml2json';
+import StringMatcher from './matchers/StringMatcher';
+import DurationMatcher from './matchers/DurationMatcher';
+import DateTimeMatcher from './matchers/DateTimeMatcher';
+import NumericMatcher from './matchers/NumericMatcher';
+import RepresentationBaseValuesMap from './maps/RepresentationBaseValuesMap';
+import SegmentValuesMap from './maps/SegmentValuesMap';
+
+function DashParser() {
+
+    const context = this.context;
+
+    let instance, logger, matchers, converter, objectIron;
+
+    function setup() {
+        logger = Debug(context).getInstance().getLogger(instance);
+        matchers = [new DurationMatcher(), new DateTimeMatcher(), new NumericMatcher(), new StringMatcher() // last in list to take precedence over NumericMatcher
+        ];
+
+        converter = new X2JS({
+            escapeMode: false,
+            attributePrefix: '',
+            arrayAccessForm: 'property',
+            emptyNodeForm: 'object',
+            stripWhitespaces: false,
+            enableToStringFunc: false,
+            ignoreRoot: true,
+            matchers: matchers
+        });
+
+        objectIron = ObjectIron(context).create({
+            adaptationset: new RepresentationBaseValuesMap(),
+            period: new SegmentValuesMap()
+        });
+    }
+
+    function getMatchers() {
+        return matchers;
+    }
+
+    function getIron() {
+        return objectIron;
+    }
+
+    function parse(data) {
+        let manifest;
+        const startTime = window.performance.now();
+
+        manifest = converter.xml_str2json(data);
+
+        if (!manifest) {
+            throw new Error('parsing the manifest failed');
+        }
+
+        const jsonTime = window.performance.now();
+        objectIron.run(manifest);
+
+        const ironedTime = window.performance.now();
+        logger.info('Parsing complete: ( xml2json: ' + (jsonTime - startTime).toPrecision(3) + 'ms, objectiron: ' + (ironedTime - jsonTime).toPrecision(3) + 'ms, total: ' + ((ironedTime - startTime) / 1000).toPrecision(3) + 's)');
+
+        return manifest;
+    }
+
+    instance = {
+        parse: parse,
+        getMatchers: getMatchers,
+        getIron: getIron
+    };
+
+    setup();
+
+    return instance;
+}
+
+DashParser.__dashjs_factory_name = 'DashParser';
+export default FactoryMaker.getClassFactory(DashParser);
 //# sourceMappingURL=DashParser.js.map

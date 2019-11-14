@@ -27,5 +27,144 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import ObjectUtils from'../utils/ObjectUtils';import FactoryMaker from'../../core/FactoryMaker';const DEFAULT_INDEX=NaN;class Node{constructor(_baseUrls,_selectedIdx){this.data={baseUrls:_baseUrls||null,selectedIdx:_selectedIdx||DEFAULT_INDEX};this.children=[];}}function BaseURLTreeModel(){let instance,root,dashManifestModel;const context=this.context;const objectUtils=ObjectUtils(context).getInstance();function setup(){reset();}function setConfig(config){if(config.dashManifestModel){dashManifestModel=config.dashManifestModel;}}function checkSetConfigCall(){if(!dashManifestModel||!dashManifestModel.hasOwnProperty('getBaseURLsFromElement')||!dashManifestModel.hasOwnProperty('getRepresentationSortFunction')){throw new Error('setConfig function has to be called previously');}}function updateChildData(node,index,element){let baseUrls=dashManifestModel.getBaseURLsFromElement(element);if(!node[index]){node[index]=new Node(baseUrls);}else{if(!objectUtils.areEqual(baseUrls,node[index].data.baseUrls)){node[index].data.baseUrls=baseUrls;node[index].data.selectedIdx=DEFAULT_INDEX;}}}function getBaseURLCollectionsFromManifest(manifest){checkSetConfigCall();let baseUrls=dashManifestModel.getBaseURLsFromElement(manifest);if(!objectUtils.areEqual(baseUrls,root.data.baseUrls)){root.data.baseUrls=baseUrls;root.data.selectedIdx=DEFAULT_INDEX;}if(manifest&&manifest.Period_asArray){manifest.Period_asArray.forEach((p,pi)=>{updateChildData(root.children,pi,p);if(p.AdaptationSet_asArray){p.AdaptationSet_asArray.forEach((a,ai)=>{updateChildData(root.children[pi].children,ai,a);if(a.Representation_asArray){a.Representation_asArray.sort(dashManifestModel.getRepresentationSortFunction()).forEach((r,ri)=>{updateChildData(root.children[pi].children[ai].children,ri,r);});}});}});}}function walk(callback,node){let target=node||root;callback(target.data);if(target.children){target.children.forEach(child=>walk(callback,child));}}function invalidateSelectedIndexes(serviceLocation){walk(data=>{if(!isNaN(data.selectedIdx)){if(serviceLocation===data.baseUrls[data.selectedIdx].serviceLocation){data.selectedIdx=DEFAULT_INDEX;}}});}function update(manifest){getBaseURLCollectionsFromManifest(manifest);}function reset(){root=new Node();}function getForPath(path){let target=root;let nodes=[target.data];if(path){path.forEach(p=>{target=target.children[p];if(target){nodes.push(target.data);}});}return nodes.filter(n=>n.baseUrls.length);}instance={reset:reset,update:update,getForPath:getForPath,invalidateSelectedIndexes:invalidateSelectedIndexes,setConfig:setConfig};setup();return instance;}BaseURLTreeModel.__dashjs_factory_name='BaseURLTreeModel';export default FactoryMaker.getClassFactory(BaseURLTreeModel);
+ */
+
+import ObjectUtils from '../utils/ObjectUtils';
+import FactoryMaker from '../../core/FactoryMaker';
+
+const DEFAULT_INDEX = NaN;
+
+class Node {
+    constructor(_baseUrls, _selectedIdx) {
+        this.data = {
+            baseUrls: _baseUrls || null,
+            selectedIdx: _selectedIdx || DEFAULT_INDEX
+        };
+        this.children = [];
+    }
+}
+
+function BaseURLTreeModel() {
+    let instance, root, dashManifestModel;
+
+    const context = this.context;
+    const objectUtils = ObjectUtils(context).getInstance();
+
+    function setup() {
+        reset();
+    }
+
+    function setConfig(config) {
+        if (config.dashManifestModel) {
+            dashManifestModel = config.dashManifestModel;
+        }
+    }
+
+    function checkSetConfigCall() {
+        if (!dashManifestModel || !dashManifestModel.hasOwnProperty('getBaseURLsFromElement') || !dashManifestModel.hasOwnProperty('getRepresentationSortFunction')) {
+            throw new Error('setConfig function has to be called previously');
+        }
+    }
+
+    function updateChildData(node, index, element) {
+        let baseUrls = dashManifestModel.getBaseURLsFromElement(element);
+
+        if (!node[index]) {
+            node[index] = new Node(baseUrls);
+        } else {
+            if (!objectUtils.areEqual(baseUrls, node[index].data.baseUrls)) {
+                node[index].data.baseUrls = baseUrls;
+                node[index].data.selectedIdx = DEFAULT_INDEX;
+            }
+        }
+    }
+
+    function getBaseURLCollectionsFromManifest(manifest) {
+        checkSetConfigCall();
+        let baseUrls = dashManifestModel.getBaseURLsFromElement(manifest);
+
+        if (!objectUtils.areEqual(baseUrls, root.data.baseUrls)) {
+            root.data.baseUrls = baseUrls;
+            root.data.selectedIdx = DEFAULT_INDEX;
+        }
+
+        if (manifest && manifest.Period_asArray) {
+            manifest.Period_asArray.forEach((p, pi) => {
+                updateChildData(root.children, pi, p);
+
+                if (p.AdaptationSet_asArray) {
+                    p.AdaptationSet_asArray.forEach((a, ai) => {
+                        updateChildData(root.children[pi].children, ai, a);
+
+                        if (a.Representation_asArray) {
+                            a.Representation_asArray.sort(dashManifestModel.getRepresentationSortFunction()).forEach((r, ri) => {
+                                updateChildData(root.children[pi].children[ai].children, ri, r);
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    function walk(callback, node) {
+        let target = node || root;
+
+        callback(target.data);
+
+        if (target.children) {
+            target.children.forEach(child => walk(callback, child));
+        }
+    }
+
+    function invalidateSelectedIndexes(serviceLocation) {
+        walk(data => {
+            if (!isNaN(data.selectedIdx)) {
+                if (serviceLocation === data.baseUrls[data.selectedIdx].serviceLocation) {
+                    data.selectedIdx = DEFAULT_INDEX;
+                }
+            }
+        });
+    }
+
+    function update(manifest) {
+        getBaseURLCollectionsFromManifest(manifest);
+    }
+
+    function reset() {
+        root = new Node();
+    }
+
+    function getForPath(path) {
+        let target = root;
+        let nodes = [target.data];
+
+        if (path) {
+            path.forEach(p => {
+                target = target.children[p];
+
+                if (target) {
+                    nodes.push(target.data);
+                }
+            });
+        }
+
+        return nodes.filter(n => n.baseUrls.length);
+    }
+
+    instance = {
+        reset: reset,
+        update: update,
+        getForPath: getForPath,
+        invalidateSelectedIndexes: invalidateSelectedIndexes,
+        setConfig: setConfig
+    };
+
+    setup();
+
+    return instance;
+}
+
+BaseURLTreeModel.__dashjs_factory_name = 'BaseURLTreeModel';
+export default FactoryMaker.getClassFactory(BaseURLTreeModel);
 //# sourceMappingURL=BaseURLTreeModel.js.map

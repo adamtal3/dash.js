@@ -27,5 +27,70 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import RangeController from'./RangeController';import ReportingController from'./ReportingController';import MetricsHandlersController from'./MetricsHandlersController';function MetricsController(config){config=config||{};let metricsHandlersController,reportingController,rangeController,instance;let context=this.context;function initialize(metricsEntry){try{rangeController=RangeController(context).create({mediaElement:config.mediaElement});rangeController.initialize(metricsEntry.Range);reportingController=ReportingController(context).create({debug:config.debug,metricsConstants:config.metricsConstants});reportingController.initialize(metricsEntry.Reporting,rangeController);metricsHandlersController=MetricsHandlersController(context).create({debug:config.debug,eventBus:config.eventBus,metricsConstants:config.metricsConstants,events:config.events});metricsHandlersController.initialize(metricsEntry.metrics,reportingController);}catch(e){reset();throw e;}}function reset(){if(metricsHandlersController){metricsHandlersController.reset();}if(reportingController){reportingController.reset();}if(rangeController){rangeController.reset();}}instance={initialize:initialize,reset:reset};return instance;}MetricsController.__dashjs_factory_name='MetricsController';export default dashjs.FactoryMaker.getClassFactory(MetricsController);/* jshint ignore:line */
+ */
+
+import RangeController from './RangeController';
+import ReportingController from './ReportingController';
+import MetricsHandlersController from './MetricsHandlersController';
+
+function MetricsController(config) {
+
+    config = config || {};
+    let metricsHandlersController, reportingController, rangeController, instance;
+
+    let context = this.context;
+
+    function initialize(metricsEntry) {
+        try {
+            rangeController = RangeController(context).create({
+                mediaElement: config.mediaElement
+            });
+
+            rangeController.initialize(metricsEntry.Range);
+
+            reportingController = ReportingController(context).create({
+                debug: config.debug,
+                metricsConstants: config.metricsConstants
+            });
+
+            reportingController.initialize(metricsEntry.Reporting, rangeController);
+
+            metricsHandlersController = MetricsHandlersController(context).create({
+                debug: config.debug,
+                eventBus: config.eventBus,
+                metricsConstants: config.metricsConstants,
+                events: config.events
+            });
+
+            metricsHandlersController.initialize(metricsEntry.metrics, reportingController);
+        } catch (e) {
+            reset();
+            throw e;
+        }
+    }
+
+    function reset() {
+        if (metricsHandlersController) {
+            metricsHandlersController.reset();
+        }
+
+        if (reportingController) {
+            reportingController.reset();
+        }
+
+        if (rangeController) {
+            rangeController.reset();
+        }
+    }
+
+    instance = {
+        initialize: initialize,
+        reset: reset
+    };
+
+    return instance;
+}
+
+MetricsController.__dashjs_factory_name = 'MetricsController';
+export default dashjs.FactoryMaker.getClassFactory(MetricsController); /* jshint ignore:line */
 //# sourceMappingURL=MetricsController.js.map

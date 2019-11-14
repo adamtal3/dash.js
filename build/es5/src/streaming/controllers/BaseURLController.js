@@ -27,6 +27,114 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import BaseURLTreeModel from'../models/BaseURLTreeModel';import BaseURLSelector from'../utils/BaseURLSelector';import URLUtils from'../utils/URLUtils';import BaseURL from'../../dash/vo/BaseURL';import FactoryMaker from'../../core/FactoryMaker';import EventBus from'../../core/EventBus';import Events from'../../core/events/Events';function BaseURLController(){let instance;let dashManifestModel;const context=this.context;const eventBus=EventBus(context).getInstance();const urlUtils=URLUtils(context).getInstance();let baseURLTreeModel,baseURLSelector;function onBlackListChanged(e){baseURLTreeModel.invalidateSelectedIndexes(e.entry);}function setup(){baseURLTreeModel=BaseURLTreeModel(context).create();baseURLSelector=BaseURLSelector(context).create();eventBus.on(Events.SERVICE_LOCATION_BLACKLIST_CHANGED,onBlackListChanged,instance);}function setConfig(config){if(config.baseURLTreeModel){baseURLTreeModel=config.baseURLTreeModel;}if(config.baseURLSelector){baseURLSelector=config.baseURLSelector;}if(config.dashManifestModel){dashManifestModel=config.dashManifestModel;}}function update(manifest){baseURLTreeModel.update(manifest);baseURLSelector.chooseSelectorFromManifest(manifest);}function resolve(path){const baseUrls=baseURLTreeModel.getForPath(path);const baseUrl=baseUrls.reduce((p,c)=>{const b=baseURLSelector.select(c);if(b){if(!urlUtils.isRelative(b.url)){p.url=b.url;p.serviceLocation=b.serviceLocation;}else{p.url=urlUtils.resolve(b.url,p.url);}p.availabilityTimeOffset=b.availabilityTimeOffset;p.availabilityTimeComplete=b.availabilityTimeComplete;}else{return new BaseURL();}return p;},new BaseURL());if(!urlUtils.isRelative(baseUrl.url)){return baseUrl;}}function reset(){baseURLTreeModel.reset();baseURLSelector.reset();}function initialize(data){// report config to baseURLTreeModel and baseURLSelector
-baseURLTreeModel.setConfig({dashManifestModel:dashManifestModel});baseURLSelector.setConfig({dashManifestModel:dashManifestModel});update(data);}instance={reset:reset,initialize:initialize,resolve:resolve,setConfig:setConfig};setup();return instance;}BaseURLController.__dashjs_factory_name='BaseURLController';export default FactoryMaker.getSingletonFactory(BaseURLController);
+ */
+
+import BaseURLTreeModel from '../models/BaseURLTreeModel';
+import BaseURLSelector from '../utils/BaseURLSelector';
+import URLUtils from '../utils/URLUtils';
+import BaseURL from '../../dash/vo/BaseURL';
+import FactoryMaker from '../../core/FactoryMaker';
+import EventBus from '../../core/EventBus';
+import Events from '../../core/events/Events';
+
+function BaseURLController() {
+
+    let instance;
+    let dashManifestModel;
+
+    const context = this.context;
+    const eventBus = EventBus(context).getInstance();
+    const urlUtils = URLUtils(context).getInstance();
+
+    let baseURLTreeModel, baseURLSelector;
+
+    function onBlackListChanged(e) {
+        baseURLTreeModel.invalidateSelectedIndexes(e.entry);
+    }
+
+    function setup() {
+        baseURLTreeModel = BaseURLTreeModel(context).create();
+        baseURLSelector = BaseURLSelector(context).create();
+
+        eventBus.on(Events.SERVICE_LOCATION_BLACKLIST_CHANGED, onBlackListChanged, instance);
+    }
+
+    function setConfig(config) {
+        if (config.baseURLTreeModel) {
+            baseURLTreeModel = config.baseURLTreeModel;
+        }
+
+        if (config.baseURLSelector) {
+            baseURLSelector = config.baseURLSelector;
+        }
+
+        if (config.dashManifestModel) {
+            dashManifestModel = config.dashManifestModel;
+        }
+    }
+
+    function update(manifest) {
+        baseURLTreeModel.update(manifest);
+        baseURLSelector.chooseSelectorFromManifest(manifest);
+    }
+
+    function resolve(path) {
+        const baseUrls = baseURLTreeModel.getForPath(path);
+
+        const baseUrl = baseUrls.reduce((p, c) => {
+            const b = baseURLSelector.select(c);
+
+            if (b) {
+                if (!urlUtils.isRelative(b.url)) {
+                    p.url = b.url;
+                    p.serviceLocation = b.serviceLocation;
+                } else {
+                    p.url = urlUtils.resolve(b.url, p.url);
+                }
+                p.availabilityTimeOffset = b.availabilityTimeOffset;
+                p.availabilityTimeComplete = b.availabilityTimeComplete;
+            } else {
+                return new BaseURL();
+            }
+
+            return p;
+        }, new BaseURL());
+
+        if (!urlUtils.isRelative(baseUrl.url)) {
+            return baseUrl;
+        }
+    }
+
+    function reset() {
+        baseURLTreeModel.reset();
+        baseURLSelector.reset();
+    }
+
+    function initialize(data) {
+
+        // report config to baseURLTreeModel and baseURLSelector
+        baseURLTreeModel.setConfig({
+            dashManifestModel: dashManifestModel
+        });
+        baseURLSelector.setConfig({
+            dashManifestModel: dashManifestModel
+        });
+
+        update(data);
+    }
+
+    instance = {
+        reset: reset,
+        initialize: initialize,
+        resolve: resolve,
+        setConfig: setConfig
+    };
+
+    setup();
+
+    return instance;
+}
+
+BaseURLController.__dashjs_factory_name = 'BaseURLController';
+export default FactoryMaker.getSingletonFactory(BaseURLController);
 //# sourceMappingURL=BaseURLController.js.map

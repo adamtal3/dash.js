@@ -27,9 +27,53 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import FactoryMaker from'../../core/FactoryMaker';import Constants from'../constants/Constants';/**
+ */
+import FactoryMaker from '../../core/FactoryMaker';
+import Constants from '../constants/Constants';
+
+/**
  * @param {Object} config
  * @returns {{initialize: initialize, getLiveEdge: getLiveEdge, reset: reset}|*}
  * @constructor
- */function LiveEdgeFinder(config){config=config||{};let instance;let timelineConverter=config.timelineConverter;let streamProcessor=config.streamProcessor;function checkConfig(){if(!timelineConverter||!timelineConverter.hasOwnProperty('getExpectedLiveEdge')||!streamProcessor||!streamProcessor.hasOwnProperty('getRepresentationInfo')){throw new Error(Constants.MISSING_CONFIG_ERROR);}}function getLiveEdge(){checkConfig();const representationInfo=streamProcessor.getRepresentationInfo();const dvrEnd=representationInfo.DVRWindow?representationInfo.DVRWindow.end:0;let liveEdge=dvrEnd;if(representationInfo.useCalculatedLiveEdgeTime){liveEdge=timelineConverter.getExpectedLiveEdge();timelineConverter.setClientTimeOffset(liveEdge-dvrEnd);}return liveEdge;}function reset(){timelineConverter=null;streamProcessor=null;}instance={getLiveEdge:getLiveEdge,reset:reset};return instance;}LiveEdgeFinder.__dashjs_factory_name='LiveEdgeFinder';export default FactoryMaker.getClassFactory(LiveEdgeFinder);
+ */
+function LiveEdgeFinder(config) {
+
+    config = config || {};
+    let instance;
+    let timelineConverter = config.timelineConverter;
+    let streamProcessor = config.streamProcessor;
+
+    function checkConfig() {
+        if (!timelineConverter || !timelineConverter.hasOwnProperty('getExpectedLiveEdge') || !streamProcessor || !streamProcessor.hasOwnProperty('getRepresentationInfo')) {
+            throw new Error(Constants.MISSING_CONFIG_ERROR);
+        }
+    }
+
+    function getLiveEdge() {
+        checkConfig();
+        const representationInfo = streamProcessor.getRepresentationInfo();
+        const dvrEnd = representationInfo.DVRWindow ? representationInfo.DVRWindow.end : 0;
+        let liveEdge = dvrEnd;
+        if (representationInfo.useCalculatedLiveEdgeTime) {
+            liveEdge = timelineConverter.getExpectedLiveEdge();
+            timelineConverter.setClientTimeOffset(liveEdge - dvrEnd);
+        }
+        return liveEdge;
+    }
+
+    function reset() {
+        timelineConverter = null;
+        streamProcessor = null;
+    }
+
+    instance = {
+        getLiveEdge: getLiveEdge,
+        reset: reset
+    };
+
+    return instance;
+}
+
+LiveEdgeFinder.__dashjs_factory_name = 'LiveEdgeFinder';
+export default FactoryMaker.getClassFactory(LiveEdgeFinder);
 //# sourceMappingURL=LiveEdgeFinder.js.map

@@ -27,8 +27,21 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class EventStream{constructor(){this.adaptionSet=null;this.representation=null;this.period=null;this.timescale=1;this.value='';this.schemeIdUri='';}}export default EventStream;
+ */
+class EventStream {
+  constructor() {
+    this.adaptionSet = null;
+    this.representation = null;
+    this.period = null;
+    this.timescale = 1;
+    this.value = '';
+    this.schemeIdUri = '';
+  }
+}
+
+export default EventStream;
 //# sourceMappingURL=EventStream.js.map

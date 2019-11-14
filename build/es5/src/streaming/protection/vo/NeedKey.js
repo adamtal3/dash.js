@@ -27,12 +27,22 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @classdesc NeedKey
  * @ignore
- */class NeedKey{/**
-     * @param {ArrayBuffer} initData the initialization data
-     * @param {string} initDataType initialization data type
-     * @class
-     */constructor(initData,initDataType){this.initData=initData;this.initDataType=initDataType;}}export default NeedKey;
+ */
+class NeedKey {
+  /**
+   * @param {ArrayBuffer} initData the initialization data
+   * @param {string} initDataType initialization data type
+   * @class
+   */
+  constructor(initData, initDataType) {
+    this.initData = initData;
+    this.initDataType = initDataType;
+  }
+}
+
+export default NeedKey;
 //# sourceMappingURL=NeedKey.js.map

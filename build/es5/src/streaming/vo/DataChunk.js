@@ -27,9 +27,28 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+
+/**
  * @class
  * @ignore
- */class DataChunk{//Represents a data structure that keep all the necessary info about a single init/media segment
-constructor(){this.streamId=null;this.mediaInfo=null;this.segmentType=null;this.quality=NaN;this.index=NaN;this.bytes=null;this.start=NaN;this.end=NaN;this.duration=NaN;this.representationId=null;this.endFragment=null;}}export default DataChunk;
+ */
+class DataChunk {
+  //Represents a data structure that keep all the necessary info about a single init/media segment
+  constructor() {
+    this.streamId = null;
+    this.mediaInfo = null;
+    this.segmentType = null;
+    this.quality = NaN;
+    this.index = NaN;
+    this.bytes = null;
+    this.start = NaN;
+    this.end = NaN;
+    this.duration = NaN;
+    this.representationId = null;
+    this.endFragment = null;
+  }
+}
+
+export default DataChunk;
 //# sourceMappingURL=DataChunk.js.map

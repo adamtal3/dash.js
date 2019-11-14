@@ -27,6 +27,20 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import MssHandler from'./MssHandler';// Shove both of these into the global scope
-var context=typeof window!=='undefined'&&window||global;var dashjs=context.dashjs;if(!dashjs){dashjs=context.dashjs={};}dashjs.MssHandler=MssHandler;export default dashjs;export{MssHandler};
+ */
+
+import MssHandler from './MssHandler';
+
+// Shove both of these into the global scope
+var context = typeof window !== 'undefined' && window || global;
+
+var dashjs = context.dashjs;
+if (!dashjs) {
+  dashjs = context.dashjs = {};
+}
+
+dashjs.MssHandler = MssHandler;
+
+export default dashjs;
+export { MssHandler };
 //# sourceMappingURL=index.js.map

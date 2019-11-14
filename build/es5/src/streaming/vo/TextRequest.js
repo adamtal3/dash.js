@@ -27,9 +27,23 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */import Constants from'../constants/Constants';import FragmentRequest from'./FragmentRequest';class TextRequest extends FragmentRequest{constructor(url,type){super();this.url=url||null;this.type=type||null;this.mediaType=Constants.STREAM;this.responseType='';//'text' value returns a bad encoding response in Firefox
-}}export default TextRequest;
+ */
+import Constants from '../constants/Constants';
+import FragmentRequest from './FragmentRequest';
+
+class TextRequest extends FragmentRequest {
+  constructor(url, type) {
+    super();
+    this.url = url || null;
+    this.type = type || null;
+    this.mediaType = Constants.STREAM;
+    this.responseType = ''; //'text' value returns a bad encoding response in Firefox
+  }
+}
+
+export default TextRequest;
 //# sourceMappingURL=TextRequest.js.map

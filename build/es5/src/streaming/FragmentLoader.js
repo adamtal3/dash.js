@@ -27,5 +27,130 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import HTTPLoader from'./net/HTTPLoader';import HeadRequest from'./vo/HeadRequest';import DashJSError from'./vo/DashJSError';import EventBus from'./../core/EventBus';import BoxParser from'../streaming/utils/BoxParser';import Events from'./../core/events/Events';import Errors from'./../core/errors/Errors';import FactoryMaker from'../core/FactoryMaker';function FragmentLoader(config){config=config||{};const context=this.context;const eventBus=EventBus(context).getInstance();let instance,httpLoader;function setup(){const boxParser=BoxParser(context).getInstance();httpLoader=HTTPLoader(context).create({errHandler:config.errHandler,metricsModel:config.metricsModel,mediaPlayerModel:config.mediaPlayerModel,requestModifier:config.requestModifier,boxParser:boxParser,useFetch:config.mediaPlayerModel.getLowLatencyEnabled()});}function checkForExistence(request){const report=function(success){eventBus.trigger(Events.CHECK_FOR_EXISTENCE_COMPLETED,{request:request,exists:success});};if(request){let headRequest=new HeadRequest(request.url);httpLoader.load({request:headRequest,success:function(){report(true);},error:function(){report(false);}});}else{report(false);}}function load(request){const report=function(data,error){eventBus.trigger(Events.LOADING_COMPLETED,{request:request,response:data||null,error:error||null,sender:instance});};if(request){httpLoader.load({request:request,progress:function(event){eventBus.trigger(Events.LOADING_PROGRESS,{request:request,stream:event.stream});if(event.data){eventBus.trigger(Events.LOADING_DATA_PROGRESS,{request:request,response:event.data||null,error:null,sender:instance});}},success:function(data){report(data);},error:function(request,statusText,errorText){report(undefined,new DashJSError(Errors.FRAGMENT_LOADER_LOADING_FAILURE_ERROR_CODE,errorText,statusText));},abort:function(request){if(request){eventBus.trigger(Events.LOADING_ABANDONED,{request:request,mediaType:request.mediaType,sender:instance});}}});}else{report(undefined,new DashJSError(Errors.FRAGMENT_LOADER_NULL_REQUEST_ERROR_CODE,Errors.FRAGMENT_LOADER_NULL_REQUEST_ERROR_MESSAGE));}}function abort(){if(httpLoader){httpLoader.abort();}}function reset(){if(httpLoader){httpLoader.abort();httpLoader=null;}}instance={checkForExistence:checkForExistence,load:load,abort:abort,reset:reset};setup();return instance;}FragmentLoader.__dashjs_factory_name='FragmentLoader';export default FactoryMaker.getClassFactory(FragmentLoader);
+ */
+import HTTPLoader from './net/HTTPLoader';
+import HeadRequest from './vo/HeadRequest';
+import DashJSError from './vo/DashJSError';
+import EventBus from './../core/EventBus';
+import BoxParser from '../streaming/utils/BoxParser';
+import Events from './../core/events/Events';
+import Errors from './../core/errors/Errors';
+import FactoryMaker from '../core/FactoryMaker';
+
+function FragmentLoader(config) {
+
+    config = config || {};
+    const context = this.context;
+    const eventBus = EventBus(context).getInstance();
+
+    let instance, httpLoader;
+
+    function setup() {
+        const boxParser = BoxParser(context).getInstance();
+        httpLoader = HTTPLoader(context).create({
+            errHandler: config.errHandler,
+            metricsModel: config.metricsModel,
+            mediaPlayerModel: config.mediaPlayerModel,
+            requestModifier: config.requestModifier,
+            boxParser: boxParser,
+            useFetch: config.mediaPlayerModel.getLowLatencyEnabled()
+        });
+    }
+
+    function checkForExistence(request) {
+        const report = function (success) {
+            eventBus.trigger(Events.CHECK_FOR_EXISTENCE_COMPLETED, {
+                request: request,
+                exists: success
+            });
+        };
+
+        if (request) {
+            let headRequest = new HeadRequest(request.url);
+
+            httpLoader.load({
+                request: headRequest,
+                success: function () {
+                    report(true);
+                },
+                error: function () {
+                    report(false);
+                }
+            });
+        } else {
+            report(false);
+        }
+    }
+
+    function load(request) {
+        const report = function (data, error) {
+            eventBus.trigger(Events.LOADING_COMPLETED, {
+                request: request,
+                response: data || null,
+                error: error || null,
+                sender: instance
+            });
+        };
+
+        if (request) {
+            httpLoader.load({
+                request: request,
+                progress: function (event) {
+                    eventBus.trigger(Events.LOADING_PROGRESS, {
+                        request: request,
+                        stream: event.stream
+                    });
+                    if (event.data) {
+                        eventBus.trigger(Events.LOADING_DATA_PROGRESS, {
+                            request: request,
+                            response: event.data || null,
+                            error: null,
+                            sender: instance
+                        });
+                    }
+                },
+                success: function (data) {
+                    report(data);
+                },
+                error: function (request, statusText, errorText) {
+                    report(undefined, new DashJSError(Errors.FRAGMENT_LOADER_LOADING_FAILURE_ERROR_CODE, errorText, statusText));
+                },
+                abort: function (request) {
+                    if (request) {
+                        eventBus.trigger(Events.LOADING_ABANDONED, { request: request, mediaType: request.mediaType, sender: instance });
+                    }
+                }
+            });
+        } else {
+            report(undefined, new DashJSError(Errors.FRAGMENT_LOADER_NULL_REQUEST_ERROR_CODE, Errors.FRAGMENT_LOADER_NULL_REQUEST_ERROR_MESSAGE));
+        }
+    }
+
+    function abort() {
+        if (httpLoader) {
+            httpLoader.abort();
+        }
+    }
+
+    function reset() {
+        if (httpLoader) {
+            httpLoader.abort();
+            httpLoader = null;
+        }
+    }
+
+    instance = {
+        checkForExistence: checkForExistence,
+        load: load,
+        abort: abort,
+        reset: reset
+    };
+
+    setup();
+
+    return instance;
+}
+
+FragmentLoader.__dashjs_factory_name = 'FragmentLoader';
+export default FactoryMaker.getClassFactory(FragmentLoader);
 //# sourceMappingURL=FragmentLoader.js.map

@@ -27,8 +27,155 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import ThroughputRule from'./ThroughputRule';import InsufficientBufferRule from'./InsufficientBufferRule';import AbandonRequestsRule from'./AbandonRequestsRule';import DroppedFramesRule from'./DroppedFramesRule';import SwitchHistoryRule from'./SwitchHistoryRule';import BolaRule from'./BolaRule';import FactoryMaker from'../../../core/FactoryMaker';import SwitchRequest from'../SwitchRequest';const QUALITY_SWITCH_RULES='qualitySwitchRules';const ABANDON_FRAGMENT_RULES='abandonFragmentRules';function ABRRulesCollection(config){config=config||{};const context=this.context;const mediaPlayerModel=config.mediaPlayerModel;const metricsModel=config.metricsModel;const dashMetrics=config.dashMetrics;let instance,qualitySwitchRules,abandonFragmentRules;function initialize(){qualitySwitchRules=[];abandonFragmentRules=[];if(mediaPlayerModel.getUseDefaultABRRules()){// Only one of BolaRule and ThroughputRule will give a switchRequest.quality !== SwitchRequest.NO_CHANGE.
-// This is controlled by useBufferOccupancyABR mechanism in AbrController.
-qualitySwitchRules.push(BolaRule(context).create({metricsModel:metricsModel,dashMetrics:dashMetrics,mediaPlayerModel:mediaPlayerModel}));qualitySwitchRules.push(ThroughputRule(context).create({metricsModel:metricsModel,dashMetrics:dashMetrics}));qualitySwitchRules.push(InsufficientBufferRule(context).create({metricsModel:metricsModel,dashMetrics:dashMetrics}));qualitySwitchRules.push(SwitchHistoryRule(context).create());qualitySwitchRules.push(DroppedFramesRule(context).create());abandonFragmentRules.push(AbandonRequestsRule(context).create({metricsModel:metricsModel,dashMetrics:dashMetrics,mediaPlayerModel:mediaPlayerModel}));}// add custom ABR rules if any
-const customRules=mediaPlayerModel.getABRCustomRules();customRules.forEach(function(rule){if(rule.type===QUALITY_SWITCH_RULES){qualitySwitchRules.push(rule.rule(context).create());}if(rule.type===ABANDON_FRAGMENT_RULES){abandonFragmentRules.push(rule.rule(context).create());}});}function getActiveRules(srArray){return srArray.filter(sr=>sr.quality>SwitchRequest.NO_CHANGE);}function getMinSwitchRequest(srArray){const values={};let i,len,req,newQuality,quality;if(srArray.length===0){return;}values[SwitchRequest.PRIORITY.STRONG]=SwitchRequest.NO_CHANGE;values[SwitchRequest.PRIORITY.WEAK]=SwitchRequest.NO_CHANGE;values[SwitchRequest.PRIORITY.DEFAULT]=SwitchRequest.NO_CHANGE;for(i=0,len=srArray.length;i<len;i+=1){req=srArray[i];if(req.quality!==SwitchRequest.NO_CHANGE){values[req.priority]=values[req.priority]>SwitchRequest.NO_CHANGE?Math.min(values[req.priority],req.quality):req.quality;}}if(values[SwitchRequest.PRIORITY.WEAK]!==SwitchRequest.NO_CHANGE){newQuality=values[SwitchRequest.PRIORITY.WEAK];}if(values[SwitchRequest.PRIORITY.DEFAULT]!==SwitchRequest.NO_CHANGE){newQuality=values[SwitchRequest.PRIORITY.DEFAULT];}if(values[SwitchRequest.PRIORITY.STRONG]!==SwitchRequest.NO_CHANGE){newQuality=values[SwitchRequest.PRIORITY.STRONG];}if(newQuality!==SwitchRequest.NO_CHANGE){quality=newQuality;}return SwitchRequest(context).create(quality);}function getMaxQuality(rulesContext){const switchRequestArray=qualitySwitchRules.map(rule=>rule.getMaxIndex(rulesContext));const activeRules=getActiveRules(switchRequestArray);const maxQuality=getMinSwitchRequest(activeRules);return maxQuality||SwitchRequest(context).create();}function shouldAbandonFragment(rulesContext){const abandonRequestArray=abandonFragmentRules.map(rule=>rule.shouldAbandon(rulesContext));const activeRules=getActiveRules(abandonRequestArray);const shouldAbandon=getMinSwitchRequest(activeRules);return shouldAbandon||SwitchRequest(context).create();}function reset(){[qualitySwitchRules,abandonFragmentRules].forEach(rules=>{if(rules&&rules.length){rules.forEach(rule=>rule.reset&&rule.reset());}});qualitySwitchRules=[];abandonFragmentRules=[];}instance={initialize:initialize,reset:reset,getMaxQuality:getMaxQuality,shouldAbandonFragment:shouldAbandonFragment};return instance;}ABRRulesCollection.__dashjs_factory_name='ABRRulesCollection';const factory=FactoryMaker.getClassFactory(ABRRulesCollection);factory.QUALITY_SWITCH_RULES=QUALITY_SWITCH_RULES;factory.ABANDON_FRAGMENT_RULES=ABANDON_FRAGMENT_RULES;FactoryMaker.updateSingletonFactory(ABRRulesCollection.__dashjs_factory_name,factory);export default factory;
+ */
+import ThroughputRule from './ThroughputRule';
+import InsufficientBufferRule from './InsufficientBufferRule';
+import AbandonRequestsRule from './AbandonRequestsRule';
+import DroppedFramesRule from './DroppedFramesRule';
+import SwitchHistoryRule from './SwitchHistoryRule';
+import BolaRule from './BolaRule';
+import FactoryMaker from '../../../core/FactoryMaker';
+import SwitchRequest from '../SwitchRequest';
+
+const QUALITY_SWITCH_RULES = 'qualitySwitchRules';
+const ABANDON_FRAGMENT_RULES = 'abandonFragmentRules';
+
+function ABRRulesCollection(config) {
+
+    config = config || {};
+    const context = this.context;
+
+    const mediaPlayerModel = config.mediaPlayerModel;
+    const metricsModel = config.metricsModel;
+    const dashMetrics = config.dashMetrics;
+
+    let instance, qualitySwitchRules, abandonFragmentRules;
+
+    function initialize() {
+        qualitySwitchRules = [];
+        abandonFragmentRules = [];
+
+        if (mediaPlayerModel.getUseDefaultABRRules()) {
+            // Only one of BolaRule and ThroughputRule will give a switchRequest.quality !== SwitchRequest.NO_CHANGE.
+            // This is controlled by useBufferOccupancyABR mechanism in AbrController.
+            qualitySwitchRules.push(BolaRule(context).create({
+                metricsModel: metricsModel,
+                dashMetrics: dashMetrics,
+                mediaPlayerModel: mediaPlayerModel
+            }));
+            qualitySwitchRules.push(ThroughputRule(context).create({
+                metricsModel: metricsModel,
+                dashMetrics: dashMetrics
+            }));
+            qualitySwitchRules.push(InsufficientBufferRule(context).create({
+                metricsModel: metricsModel,
+                dashMetrics: dashMetrics
+            }));
+            qualitySwitchRules.push(SwitchHistoryRule(context).create());
+            qualitySwitchRules.push(DroppedFramesRule(context).create());
+            abandonFragmentRules.push(AbandonRequestsRule(context).create({
+                metricsModel: metricsModel,
+                dashMetrics: dashMetrics,
+                mediaPlayerModel: mediaPlayerModel
+            }));
+        }
+
+        // add custom ABR rules if any
+        const customRules = mediaPlayerModel.getABRCustomRules();
+        customRules.forEach(function (rule) {
+            if (rule.type === QUALITY_SWITCH_RULES) {
+                qualitySwitchRules.push(rule.rule(context).create());
+            }
+
+            if (rule.type === ABANDON_FRAGMENT_RULES) {
+                abandonFragmentRules.push(rule.rule(context).create());
+            }
+        });
+    }
+
+    function getActiveRules(srArray) {
+        return srArray.filter(sr => sr.quality > SwitchRequest.NO_CHANGE);
+    }
+
+    function getMinSwitchRequest(srArray) {
+        const values = {};
+        let i, len, req, newQuality, quality;
+
+        if (srArray.length === 0) {
+            return;
+        }
+
+        values[SwitchRequest.PRIORITY.STRONG] = SwitchRequest.NO_CHANGE;
+        values[SwitchRequest.PRIORITY.WEAK] = SwitchRequest.NO_CHANGE;
+        values[SwitchRequest.PRIORITY.DEFAULT] = SwitchRequest.NO_CHANGE;
+
+        for (i = 0, len = srArray.length; i < len; i += 1) {
+            req = srArray[i];
+            if (req.quality !== SwitchRequest.NO_CHANGE) {
+                values[req.priority] = values[req.priority] > SwitchRequest.NO_CHANGE ? Math.min(values[req.priority], req.quality) : req.quality;
+            }
+        }
+
+        if (values[SwitchRequest.PRIORITY.WEAK] !== SwitchRequest.NO_CHANGE) {
+            newQuality = values[SwitchRequest.PRIORITY.WEAK];
+        }
+
+        if (values[SwitchRequest.PRIORITY.DEFAULT] !== SwitchRequest.NO_CHANGE) {
+            newQuality = values[SwitchRequest.PRIORITY.DEFAULT];
+        }
+
+        if (values[SwitchRequest.PRIORITY.STRONG] !== SwitchRequest.NO_CHANGE) {
+            newQuality = values[SwitchRequest.PRIORITY.STRONG];
+        }
+
+        if (newQuality !== SwitchRequest.NO_CHANGE) {
+            quality = newQuality;
+        }
+
+        return SwitchRequest(context).create(quality);
+    }
+
+    function getMaxQuality(rulesContext) {
+        const switchRequestArray = qualitySwitchRules.map(rule => rule.getMaxIndex(rulesContext));
+        const activeRules = getActiveRules(switchRequestArray);
+        const maxQuality = getMinSwitchRequest(activeRules);
+
+        return maxQuality || SwitchRequest(context).create();
+    }
+
+    function shouldAbandonFragment(rulesContext) {
+        const abandonRequestArray = abandonFragmentRules.map(rule => rule.shouldAbandon(rulesContext));
+        const activeRules = getActiveRules(abandonRequestArray);
+        const shouldAbandon = getMinSwitchRequest(activeRules);
+
+        return shouldAbandon || SwitchRequest(context).create();
+    }
+
+    function reset() {
+        [qualitySwitchRules, abandonFragmentRules].forEach(rules => {
+            if (rules && rules.length) {
+                rules.forEach(rule => rule.reset && rule.reset());
+            }
+        });
+        qualitySwitchRules = [];
+        abandonFragmentRules = [];
+    }
+
+    instance = {
+        initialize: initialize,
+        reset: reset,
+        getMaxQuality: getMaxQuality,
+        shouldAbandonFragment: shouldAbandonFragment
+    };
+
+    return instance;
+}
+
+ABRRulesCollection.__dashjs_factory_name = 'ABRRulesCollection';
+const factory = FactoryMaker.getClassFactory(ABRRulesCollection);
+factory.QUALITY_SWITCH_RULES = QUALITY_SWITCH_RULES;
+factory.ABANDON_FRAGMENT_RULES = ABANDON_FRAGMENT_RULES;
+FactoryMaker.updateSingletonFactory(ABRRulesCollection.__dashjs_factory_name, factory);
+
+export default factory;
 //# sourceMappingURL=ABRRulesCollection.js.map

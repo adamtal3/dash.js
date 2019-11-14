@@ -27,15 +27,63 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import DVBErrorsTranslator from'./utils/DVBErrorsTranslator';import MetricsReportingEvents from'./MetricsReportingEvents';import MetricsCollectionController from'./controllers/MetricsCollectionController';import MetricsHandlerFactory from'./metrics/MetricsHandlerFactory';import ReportingFactory from'./reporting/ReportingFactory';function MetricsReporting(){let context=this.context;let instance,dvbErrorsTranslator;/**
+ */
+
+import DVBErrorsTranslator from './utils/DVBErrorsTranslator';
+import MetricsReportingEvents from './MetricsReportingEvents';
+import MetricsCollectionController from './controllers/MetricsCollectionController';
+import MetricsHandlerFactory from './metrics/MetricsHandlerFactory';
+import ReportingFactory from './reporting/ReportingFactory';
+
+function MetricsReporting() {
+
+    let context = this.context;
+    let instance, dvbErrorsTranslator;
+
+    /**
      * Create a MetricsCollectionController, and a DVBErrorsTranslator
      * @param {Object} config - dependancies from owner
      * @return {MetricsCollectionController} Metrics Collection Controller
-     */function createMetricsReporting(config){dvbErrorsTranslator=DVBErrorsTranslator(context).getInstance({eventBus:config.eventBus,metricsModel:config.metricsModel,metricsConstants:config.metricsConstants,events:config.events});return MetricsCollectionController(context).create(config);}/**
+     */
+    function createMetricsReporting(config) {
+        dvbErrorsTranslator = DVBErrorsTranslator(context).getInstance({
+            eventBus: config.eventBus,
+            metricsModel: config.metricsModel,
+            metricsConstants: config.metricsConstants,
+            events: config.events
+        });
+
+        return MetricsCollectionController(context).create(config);
+    }
+
+    /**
      * Get the ReportingFactory to allow new reporters to be registered
      * @return {ReportingFactory} Reporting Factory
-     */function getReportingFactory(){return ReportingFactory(context).getInstance();}/**
+     */
+    function getReportingFactory() {
+        return ReportingFactory(context).getInstance();
+    }
+
+    /**
      * Get the MetricsHandlerFactory to allow new handlers to be registered
      * @return {MetricsHandlerFactory} Metrics Handler Factory
-     */function getMetricsHandlerFactory(){return MetricsHandlerFactory(context).getInstance();}instance={createMetricsReporting:createMetricsReporting,getReportingFactory:getReportingFactory,getMetricsHandlerFactory:getMetricsHandlerFactory};return instance;}MetricsReporting.__dashjs_factory_name='MetricsReporting';const factory=dashjs.FactoryMaker.getClassFactory(MetricsReporting);/* jshint ignore:line */factory.events=MetricsReportingEvents;dashjs.FactoryMaker.updateClassFactory(MetricsReporting.__dashjs_factory_name,factory);/* jshint ignore:line */export default factory;
+     */
+    function getMetricsHandlerFactory() {
+        return MetricsHandlerFactory(context).getInstance();
+    }
+
+    instance = {
+        createMetricsReporting: createMetricsReporting,
+        getReportingFactory: getReportingFactory,
+        getMetricsHandlerFactory: getMetricsHandlerFactory
+    };
+
+    return instance;
+}
+
+MetricsReporting.__dashjs_factory_name = 'MetricsReporting';
+const factory = dashjs.FactoryMaker.getClassFactory(MetricsReporting); /* jshint ignore:line */
+factory.events = MetricsReportingEvents;
+dashjs.FactoryMaker.updateClassFactory(MetricsReporting.__dashjs_factory_name, factory); /* jshint ignore:line */
+export default factory;
 //# sourceMappingURL=MetricsReporting.js.map

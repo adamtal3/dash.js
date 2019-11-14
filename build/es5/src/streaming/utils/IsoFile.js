@@ -27,19 +27,94 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import IsoBox from'../vo/IsoBox';import FactoryMaker from'../../core/FactoryMaker';function IsoFile(){let instance,parsedIsoFile;/**
+ */
+
+import IsoBox from '../vo/IsoBox';
+import FactoryMaker from '../../core/FactoryMaker';
+
+function IsoFile() {
+
+    let instance, parsedIsoFile;
+
+    /**
     * @param {string} type
     * @returns {IsoBox|null}
     * @memberof IsoFile#
-    */function getBox(type){if(!type||!parsedIsoFile||!parsedIsoFile.boxes||parsedIsoFile.boxes.length===0||typeof parsedIsoFile.fetch!=='function')return null;return convertToDashIsoBox(parsedIsoFile.fetch(type));}/**
+    */
+    function getBox(type) {
+        if (!type || !parsedIsoFile || !parsedIsoFile.boxes || parsedIsoFile.boxes.length === 0 || typeof parsedIsoFile.fetch !== 'function') return null;
+
+        return convertToDashIsoBox(parsedIsoFile.fetch(type));
+    }
+
+    /**
     * @param {string} type
     * @returns {Array|null} array of {@link IsoBox}
     * @memberof IsoFile#
-    */function getBoxes(type){let boxes=[];if(!type||!parsedIsoFile||typeof parsedIsoFile.fetchAll!=='function'){return boxes;}let boxData=parsedIsoFile.fetchAll(type);let box;for(let i=0,ln=boxData.length;i<ln;i++){box=convertToDashIsoBox(boxData[i]);if(box){boxes.push(box);}}return boxes;}/**
+    */
+    function getBoxes(type) {
+        let boxes = [];
+
+        if (!type || !parsedIsoFile || typeof parsedIsoFile.fetchAll !== 'function') {
+            return boxes;
+        }
+
+        let boxData = parsedIsoFile.fetchAll(type);
+        let box;
+
+        for (let i = 0, ln = boxData.length; i < ln; i++) {
+            box = convertToDashIsoBox(boxData[i]);
+
+            if (box) {
+                boxes.push(box);
+            }
+        }
+
+        return boxes;
+    }
+
+    /**
     * @param {string} value
     * @memberof IsoFile#
-    */function setData(value){parsedIsoFile=value;}/**
+    */
+    function setData(value) {
+        parsedIsoFile = value;
+    }
+
+    /**
     * @returns {IsoBox|null}
     * @memberof IsoFile#
-    */function getLastBox(){if(!parsedIsoFile||!parsedIsoFile.boxes||!parsedIsoFile.boxes.length)return null;let type=parsedIsoFile.boxes[parsedIsoFile.boxes.length-1].type;let boxes=getBoxes(type);return boxes.length>0?boxes[boxes.length-1]:null;}function convertToDashIsoBox(boxData){if(!boxData)return null;let box=new IsoBox(boxData);if(boxData.hasOwnProperty('_incomplete')){box.isComplete=!boxData._incomplete;}return box;}instance={getBox:getBox,getBoxes:getBoxes,setData:setData,getLastBox:getLastBox};return instance;}IsoFile.__dashjs_factory_name='IsoFile';export default FactoryMaker.getClassFactory(IsoFile);
+    */
+    function getLastBox() {
+        if (!parsedIsoFile || !parsedIsoFile.boxes || !parsedIsoFile.boxes.length) return null;
+
+        let type = parsedIsoFile.boxes[parsedIsoFile.boxes.length - 1].type;
+        let boxes = getBoxes(type);
+
+        return boxes.length > 0 ? boxes[boxes.length - 1] : null;
+    }
+
+    function convertToDashIsoBox(boxData) {
+        if (!boxData) return null;
+
+        let box = new IsoBox(boxData);
+
+        if (boxData.hasOwnProperty('_incomplete')) {
+            box.isComplete = !boxData._incomplete;
+        }
+
+        return box;
+    }
+
+    instance = {
+        getBox: getBox,
+        getBoxes: getBoxes,
+        setData: setData,
+        getLastBox: getLastBox
+    };
+
+    return instance;
+}
+IsoFile.__dashjs_factory_name = 'IsoFile';
+export default FactoryMaker.getClassFactory(IsoFile);
 //# sourceMappingURL=IsoFile.js.map

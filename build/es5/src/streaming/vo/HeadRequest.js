@@ -27,8 +27,20 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */import FragmentRequest from'./FragmentRequest';class HeadRequest extends FragmentRequest{constructor(url){super();this.url=url||null;this.checkForExistenceOnly=true;}}export default HeadRequest;
+ */
+import FragmentRequest from './FragmentRequest';
+
+class HeadRequest extends FragmentRequest {
+  constructor(url) {
+    super();
+    this.url = url || null;
+    this.checkForExistenceOnly = true;
+  }
+}
+
+export default HeadRequest;
 //# sourceMappingURL=HeadRequest.js.map

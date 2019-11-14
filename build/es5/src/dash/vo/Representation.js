@@ -27,9 +27,50 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */import DashConstants from'../constants/DashConstants';class Representation{constructor(){this.id=null;this.index=-1;this.adaptation=null;this.segmentInfoType=null;this.initialization=null;this.codecs=null;this.codecPrivateData=null;this.segmentDuration=NaN;this.timescale=1;this.startNumber=1;this.indexRange=null;this.range=null;this.presentationTimeOffset=0;// Set the source buffer timeOffset to this
-this.MSETimeOffset=NaN;this.segmentAvailabilityRange=null;this.availableSegmentsNumber=0;this.bandwidth=NaN;this.width=NaN;this.height=NaN;this.scanType=null;this.maxPlayoutRate=NaN;this.availabilityTimeOffset=0;this.availabilityTimeComplete=true;}static hasInitialization(r){return r.initialization!==null||r.range!==null;}static hasSegments(r){return r.segmentInfoType!==DashConstants.BASE_URL&&r.segmentInfoType!==DashConstants.SEGMENT_BASE&&!r.indexRange;}}export default Representation;
+ */
+
+import DashConstants from '../constants/DashConstants';
+
+class Representation {
+    constructor() {
+        this.id = null;
+        this.index = -1;
+        this.adaptation = null;
+        this.segmentInfoType = null;
+        this.initialization = null;
+        this.codecs = null;
+        this.codecPrivateData = null;
+        this.segmentDuration = NaN;
+        this.timescale = 1;
+        this.startNumber = 1;
+        this.indexRange = null;
+        this.range = null;
+        this.presentationTimeOffset = 0;
+        // Set the source buffer timeOffset to this
+        this.MSETimeOffset = NaN;
+        this.segmentAvailabilityRange = null;
+        this.availableSegmentsNumber = 0;
+        this.bandwidth = NaN;
+        this.width = NaN;
+        this.height = NaN;
+        this.scanType = null;
+        this.maxPlayoutRate = NaN;
+        this.availabilityTimeOffset = 0;
+        this.availabilityTimeComplete = true;
+    }
+
+    static hasInitialization(r) {
+        return r.initialization !== null || r.range !== null;
+    }
+
+    static hasSegments(r) {
+        return r.segmentInfoType !== DashConstants.BASE_URL && r.segmentInfoType !== DashConstants.SEGMENT_BASE && !r.indexRange;
+    }
+}
+
+export default Representation;
 //# sourceMappingURL=Representation.js.map

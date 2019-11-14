@@ -27,9 +27,56 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import MetricsReportingEvents from'../../MetricsReportingEvents';function DVBErrorsHandler(config){config=config||{};let instance,reportingController;let eventBus=config.eventBus;const metricsConstants=config.metricsConstants;function onInitialisationComplete(){// we only want to report this once per call to initialize
-eventBus.off(MetricsReportingEvents.METRICS_INITIALISATION_COMPLETE,onInitialisationComplete,this);// Note: A Player becoming a reporting Player is itself
-// something which is recorded by the DVBErrors metric.
-eventBus.trigger(MetricsReportingEvents.BECAME_REPORTING_PLAYER);}function initialize(unused,rc){if(rc){reportingController=rc;eventBus.on(MetricsReportingEvents.METRICS_INITIALISATION_COMPLETE,onInitialisationComplete,this);}}function reset(){reportingController=null;}function handleNewMetric(metric,vo){// simply pass metric straight through
-if(metric===metricsConstants.DVB_ERRORS){if(reportingController){reportingController.report(metric,vo);}}}instance={initialize:initialize,reset:reset,handleNewMetric:handleNewMetric};return instance;}export default dashjs.FactoryMaker.getClassFactory(DVBErrorsHandler);/* jshint ignore:line */
+ */
+
+import MetricsReportingEvents from '../../MetricsReportingEvents';
+
+function DVBErrorsHandler(config) {
+
+    config = config || {};
+    let instance, reportingController;
+
+    let eventBus = config.eventBus;
+    const metricsConstants = config.metricsConstants;
+
+    function onInitialisationComplete() {
+        // we only want to report this once per call to initialize
+        eventBus.off(MetricsReportingEvents.METRICS_INITIALISATION_COMPLETE, onInitialisationComplete, this);
+
+        // Note: A Player becoming a reporting Player is itself
+        // something which is recorded by the DVBErrors metric.
+        eventBus.trigger(MetricsReportingEvents.BECAME_REPORTING_PLAYER);
+    }
+
+    function initialize(unused, rc) {
+        if (rc) {
+            reportingController = rc;
+
+            eventBus.on(MetricsReportingEvents.METRICS_INITIALISATION_COMPLETE, onInitialisationComplete, this);
+        }
+    }
+
+    function reset() {
+        reportingController = null;
+    }
+
+    function handleNewMetric(metric, vo) {
+        // simply pass metric straight through
+        if (metric === metricsConstants.DVB_ERRORS) {
+            if (reportingController) {
+                reportingController.report(metric, vo);
+            }
+        }
+    }
+
+    instance = {
+        initialize: initialize,
+        reset: reset,
+        handleNewMetric: handleNewMetric
+    };
+
+    return instance;
+}
+
+export default dashjs.FactoryMaker.getClassFactory(DVBErrorsHandler); /* jshint ignore:line */
 //# sourceMappingURL=DVBErrorsHandler.js.map

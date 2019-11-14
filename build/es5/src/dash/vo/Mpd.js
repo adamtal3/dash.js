@@ -27,8 +27,23 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @class
  * @ignore
- */class Mpd{constructor(){this.manifest=null;this.suggestedPresentationDelay=0;this.availabilityStartTime=null;this.availabilityEndTime=Number.POSITIVE_INFINITY;this.timeShiftBufferDepth=Number.POSITIVE_INFINITY;this.maxSegmentDuration=Number.POSITIVE_INFINITY;this.minimumUpdatePeriod=NaN;this.mediaPresentationDuration=NaN;}}export default Mpd;
+ */
+class Mpd {
+  constructor() {
+    this.manifest = null;
+    this.suggestedPresentationDelay = 0;
+    this.availabilityStartTime = null;
+    this.availabilityEndTime = Number.POSITIVE_INFINITY;
+    this.timeShiftBufferDepth = Number.POSITIVE_INFINITY;
+    this.maxSegmentDuration = Number.POSITIVE_INFINITY;
+    this.minimumUpdatePeriod = NaN;
+    this.mediaPresentationDuration = NaN;
+  }
+}
+
+export default Mpd;
 //# sourceMappingURL=Mpd.js.map

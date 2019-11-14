@@ -27,7 +27,112 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import FactoryMaker from'../../core/FactoryMaker';import Constants from'../constants/Constants';import Thumbnail from'../vo/Thumbnail';import ThumbnailTracks from'./ThumbnailTracks';import BitrateInfo from'../vo/BitrateInfo';import{replaceTokenForTemplate,unescapeDollarsInTemplate}from'../../dash/utils/SegmentsUtils';function ThumbnailController(config){const context=this.context;let instance,thumbnailTracks;function setup(){reset();thumbnailTracks=ThumbnailTracks(context).create({dashManifestModel:config.dashManifestModel,adapter:config.adapter,baseURLController:config.baseURLController,stream:config.stream,timelineConverter:config.timelineConverter});}function getThumbnail(time,callback){const track=thumbnailTracks.getCurrentTrack();if(!track||track.segmentDuration<=0||time===undefined||time===null){return null;}// Calculate index of the sprite given a time
-const seq=Math.floor(time/track.segmentDuration);const offset=time%track.segmentDuration;const thumbIndex=Math.floor(offset*track.tilesHor*track.tilesVert/track.segmentDuration);// Create and return the thumbnail
-const thumbnail=new Thumbnail();thumbnail.width=Math.floor(track.widthPerTile);thumbnail.height=Math.floor(track.heightPerTile);thumbnail.x=Math.floor(thumbIndex%track.tilesHor)*track.widthPerTile;thumbnail.y=Math.floor(thumbIndex/track.tilesHor)*track.heightPerTile;if('readThumbnail'in track){return track.readThumbnail(time,url=>{thumbnail.url=url;if(callback)callback(thumbnail);});}else{thumbnail.url=buildUrlFromTemplate(track,seq);if(callback)callback(thumbnail);return thumbnail;}}function buildUrlFromTemplate(track,seq){const seqIdx=seq+track.startNumber;let url=replaceTokenForTemplate(track.templateUrl,'Number',seqIdx);url=replaceTokenForTemplate(url,'Time',(seqIdx-1)*track.segmentDuration);url=replaceTokenForTemplate(url,'Bandwidth',track.bandwidth);return unescapeDollarsInTemplate(url);}function setTrackByIndex(index){thumbnailTracks.setTrackByIndex(index);}function getCurrentTrackIndex(){return thumbnailTracks.getCurrentTrackIndex();}function getBitrateList(){const tracks=thumbnailTracks.getTracks();let i=0;return tracks.map(t=>{const bitrateInfo=new BitrateInfo();bitrateInfo.mediaType=Constants.IMAGE;bitrateInfo.qualityIndex=i++;bitrateInfo.bitrate=t.bitrate;bitrateInfo.width=t.width;bitrateInfo.height=t.height;return bitrateInfo;});}function reset(){if(thumbnailTracks){thumbnailTracks.reset();}}instance={get:getThumbnail,setTrackByIndex:setTrackByIndex,getCurrentTrackIndex:getCurrentTrackIndex,getBitrateList:getBitrateList,reset:reset};setup();return instance;}ThumbnailController.__dashjs_factory_name='ThumbnailController';export default FactoryMaker.getClassFactory(ThumbnailController);
+ */
+
+import FactoryMaker from '../../core/FactoryMaker';
+import Constants from '../constants/Constants';
+import Thumbnail from '../vo/Thumbnail';
+import ThumbnailTracks from './ThumbnailTracks';
+import BitrateInfo from '../vo/BitrateInfo';
+import { replaceTokenForTemplate, unescapeDollarsInTemplate } from '../../dash/utils/SegmentsUtils';
+
+function ThumbnailController(config) {
+
+    const context = this.context;
+
+    let instance, thumbnailTracks;
+
+    function setup() {
+        reset();
+        thumbnailTracks = ThumbnailTracks(context).create({
+            dashManifestModel: config.dashManifestModel,
+            adapter: config.adapter,
+            baseURLController: config.baseURLController,
+            stream: config.stream,
+            timelineConverter: config.timelineConverter
+        });
+    }
+
+    function getThumbnail(time, callback) {
+        const track = thumbnailTracks.getCurrentTrack();
+        if (!track || track.segmentDuration <= 0 || time === undefined || time === null) {
+            return null;
+        }
+
+        // Calculate index of the sprite given a time
+        const seq = Math.floor(time / track.segmentDuration);
+        const offset = time % track.segmentDuration;
+        const thumbIndex = Math.floor(offset * track.tilesHor * track.tilesVert / track.segmentDuration);
+        // Create and return the thumbnail
+        const thumbnail = new Thumbnail();
+
+        thumbnail.width = Math.floor(track.widthPerTile);
+        thumbnail.height = Math.floor(track.heightPerTile);
+        thumbnail.x = Math.floor(thumbIndex % track.tilesHor) * track.widthPerTile;
+        thumbnail.y = Math.floor(thumbIndex / track.tilesHor) * track.heightPerTile;
+
+        if ('readThumbnail' in track) {
+            return track.readThumbnail(time, url => {
+                thumbnail.url = url;
+                if (callback) callback(thumbnail);
+            });
+        } else {
+            thumbnail.url = buildUrlFromTemplate(track, seq);
+            if (callback) callback(thumbnail);
+            return thumbnail;
+        }
+    }
+
+    function buildUrlFromTemplate(track, seq) {
+        const seqIdx = seq + track.startNumber;
+        let url = replaceTokenForTemplate(track.templateUrl, 'Number', seqIdx);
+        url = replaceTokenForTemplate(url, 'Time', (seqIdx - 1) * track.segmentDuration);
+        url = replaceTokenForTemplate(url, 'Bandwidth', track.bandwidth);
+        return unescapeDollarsInTemplate(url);
+    }
+
+    function setTrackByIndex(index) {
+        thumbnailTracks.setTrackByIndex(index);
+    }
+
+    function getCurrentTrackIndex() {
+        return thumbnailTracks.getCurrentTrackIndex();
+    }
+
+    function getBitrateList() {
+        const tracks = thumbnailTracks.getTracks();
+        let i = 0;
+
+        return tracks.map(t => {
+            const bitrateInfo = new BitrateInfo();
+            bitrateInfo.mediaType = Constants.IMAGE;
+            bitrateInfo.qualityIndex = i++;
+            bitrateInfo.bitrate = t.bitrate;
+            bitrateInfo.width = t.width;
+            bitrateInfo.height = t.height;
+            return bitrateInfo;
+        });
+    }
+
+    function reset() {
+        if (thumbnailTracks) {
+            thumbnailTracks.reset();
+        }
+    }
+
+    instance = {
+        get: getThumbnail,
+        setTrackByIndex: setTrackByIndex,
+        getCurrentTrackIndex: getCurrentTrackIndex,
+        getBitrateList: getBitrateList,
+        reset: reset
+    };
+
+    setup();
+
+    return instance;
+}
+
+ThumbnailController.__dashjs_factory_name = 'ThumbnailController';
+export default FactoryMaker.getClassFactory(ThumbnailController);
 //# sourceMappingURL=ThumbnailController.js.map

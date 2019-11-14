@@ -27,9 +27,85 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import MetricsController from'./MetricsController';import ManifestParsing from'../utils/ManifestParsing';import MetricsReportingEvents from'../MetricsReportingEvents';function MetricsCollectionController(config){config=config||{};let metricsControllers={};let context=this.context;let eventBus=config.eventBus;const events=config.events;function update(e){if(e.error){return;}// start by assuming all existing controllers need removing
-let controllersToRemove=Object.keys(metricsControllers);const metrics=ManifestParsing(context).getInstance({dashManifestModel:config.dashManifestModel,constants:config.constants}).getMetrics(e.manifest);metrics.forEach(m=>{const key=JSON.stringify(m);if(!metricsControllers.hasOwnProperty(key)){try{let controller=MetricsController(context).create(config);controller.initialize(m);metricsControllers[key]=controller;}catch(e){// fail quietly
-}}else{// we still need this controller - delete from removal list
-controllersToRemove.splice(key,1);}});// now remove the unwanted controllers
-controllersToRemove.forEach(c=>{metricsControllers[c].reset();delete metricsControllers[c];});eventBus.trigger(MetricsReportingEvents.METRICS_INITIALISATION_COMPLETE);}function resetMetricsControllers(){Object.keys(metricsControllers).forEach(key=>{metricsControllers[key].reset();});metricsControllers={};}function setup(){eventBus.on(events.MANIFEST_UPDATED,update);eventBus.on(events.STREAM_TEARDOWN_COMPLETE,resetMetricsControllers);}function reset(){eventBus.off(events.MANIFEST_UPDATED,update);eventBus.off(events.STREAM_TEARDOWN_COMPLETE,resetMetricsControllers);}setup();return{reset:reset};}MetricsCollectionController.__dashjs_factory_name='MetricsCollectionController';export default dashjs.FactoryMaker.getClassFactory(MetricsCollectionController);/* jshint ignore:line */
+ */
+
+import MetricsController from './MetricsController';
+import ManifestParsing from '../utils/ManifestParsing';
+import MetricsReportingEvents from '../MetricsReportingEvents';
+
+function MetricsCollectionController(config) {
+
+    config = config || {};
+    let metricsControllers = {};
+
+    let context = this.context;
+    let eventBus = config.eventBus;
+    const events = config.events;
+
+    function update(e) {
+        if (e.error) {
+            return;
+        }
+
+        // start by assuming all existing controllers need removing
+        let controllersToRemove = Object.keys(metricsControllers);
+
+        const metrics = ManifestParsing(context).getInstance({
+            dashManifestModel: config.dashManifestModel,
+            constants: config.constants
+        }).getMetrics(e.manifest);
+
+        metrics.forEach(m => {
+            const key = JSON.stringify(m);
+
+            if (!metricsControllers.hasOwnProperty(key)) {
+                try {
+                    let controller = MetricsController(context).create(config);
+                    controller.initialize(m);
+                    metricsControllers[key] = controller;
+                } catch (e) {
+                    // fail quietly
+                }
+            } else {
+                // we still need this controller - delete from removal list
+                controllersToRemove.splice(key, 1);
+            }
+        });
+
+        // now remove the unwanted controllers
+        controllersToRemove.forEach(c => {
+            metricsControllers[c].reset();
+            delete metricsControllers[c];
+        });
+
+        eventBus.trigger(MetricsReportingEvents.METRICS_INITIALISATION_COMPLETE);
+    }
+
+    function resetMetricsControllers() {
+        Object.keys(metricsControllers).forEach(key => {
+            metricsControllers[key].reset();
+        });
+
+        metricsControllers = {};
+    }
+
+    function setup() {
+        eventBus.on(events.MANIFEST_UPDATED, update);
+        eventBus.on(events.STREAM_TEARDOWN_COMPLETE, resetMetricsControllers);
+    }
+
+    function reset() {
+        eventBus.off(events.MANIFEST_UPDATED, update);
+        eventBus.off(events.STREAM_TEARDOWN_COMPLETE, resetMetricsControllers);
+    }
+
+    setup();
+
+    return {
+        reset: reset
+    };
+}
+
+MetricsCollectionController.__dashjs_factory_name = 'MetricsCollectionController';
+export default dashjs.FactoryMaker.getClassFactory(MetricsCollectionController); /* jshint ignore:line */
 //# sourceMappingURL=MetricsCollectionController.js.map

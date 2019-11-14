@@ -27,9 +27,50 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import ReportingFactory from'../reporting/ReportingFactory';function ReportingController(config){let reporters=[];let instance;const reportingFactory=ReportingFactory(this.context).getInstance(config);function initialize(reporting,rangeController){// "if multiple Reporting elements are present, it is expected that
-// the client processes one of the recognized reporting schemes."
-// to ignore this, and support multiple Reporting per Metric,
-// simply change the 'some' below to 'forEach'
-reporting.some(r=>{let reporter=reportingFactory.create(r,rangeController);if(reporter){reporters.push(reporter);return true;}});}function reset(){reporters.forEach(r=>r.reset());reporters=[];}function report(type,vos){reporters.forEach(r=>r.report(type,vos));}instance={initialize:initialize,reset:reset,report:report};return instance;}ReportingController.__dashjs_factory_name='ReportingController';export default dashjs.FactoryMaker.getClassFactory(ReportingController);/* jshint ignore:line */
+ */
+
+import ReportingFactory from '../reporting/ReportingFactory';
+
+function ReportingController(config) {
+
+    let reporters = [];
+    let instance;
+
+    const reportingFactory = ReportingFactory(this.context).getInstance(config);
+
+    function initialize(reporting, rangeController) {
+        // "if multiple Reporting elements are present, it is expected that
+        // the client processes one of the recognized reporting schemes."
+        // to ignore this, and support multiple Reporting per Metric,
+        // simply change the 'some' below to 'forEach'
+        reporting.some(r => {
+            let reporter = reportingFactory.create(r, rangeController);
+
+            if (reporter) {
+                reporters.push(reporter);
+                return true;
+            }
+        });
+    }
+
+    function reset() {
+        reporters.forEach(r => r.reset());
+        reporters = [];
+    }
+
+    function report(type, vos) {
+        reporters.forEach(r => r.report(type, vos));
+    }
+
+    instance = {
+        initialize: initialize,
+        reset: reset,
+        report: report
+    };
+
+    return instance;
+}
+
+ReportingController.__dashjs_factory_name = 'ReportingController';
+export default dashjs.FactoryMaker.getClassFactory(ReportingController); /* jshint ignore:line */
 //# sourceMappingURL=ReportingController.js.map

@@ -27,13 +27,23 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @classdesc A media capability
  * @ignore
- */class MediaCapability{/**
-     * @param {string} contentType MIME type and codecs (RFC6386)
-     * @param {string} robustness
-     * @class
-     * @ignore
-     */constructor(contentType,robustness){this.contentType=contentType;this.robustness=robustness;}}export default MediaCapability;
+ */
+class MediaCapability {
+  /**
+   * @param {string} contentType MIME type and codecs (RFC6386)
+   * @param {string} robustness
+   * @class
+   * @ignore
+   */
+  constructor(contentType, robustness) {
+    this.contentType = contentType;
+    this.robustness = robustness;
+  }
+}
+
+export default MediaCapability;
 //# sourceMappingURL=MediaCapability.js.map

@@ -27,5 +27,32 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import Constants from'../constants/Constants';export function checkParameterType(parameter,type){if(typeof parameter!==type){throw Constants.BAD_ARGUMENT_ERROR;}}export function checkInteger(parameter){const isInt=parameter!==null&&!isNaN(parameter)&&parameter%1===0;if(!isInt){throw Constants.BAD_ARGUMENT_ERROR+' : argument is not an integer';}}export function checkRange(parameter,min,max){if(parameter<min||parameter>max){throw Constants.BAD_ARGUMENT_ERROR+' : argument out of range';}}export function checkIsVideoOrAudioType(type){if(typeof type!=='string'||type!==Constants.AUDIO&&type!==Constants.VIDEO){throw Constants.BAD_ARGUMENT_ERROR;}}
+ */
+import Constants from '../constants/Constants';
+
+export function checkParameterType(parameter, type) {
+    if (typeof parameter !== type) {
+        throw Constants.BAD_ARGUMENT_ERROR;
+    }
+}
+
+export function checkInteger(parameter) {
+    const isInt = parameter !== null && !isNaN(parameter) && parameter % 1 === 0;
+
+    if (!isInt) {
+        throw Constants.BAD_ARGUMENT_ERROR + ' : argument is not an integer';
+    }
+}
+
+export function checkRange(parameter, min, max) {
+    if (parameter < min || parameter > max) {
+        throw Constants.BAD_ARGUMENT_ERROR + ' : argument out of range';
+    }
+}
+
+export function checkIsVideoOrAudioType(type) {
+    if (typeof type !== 'string' || type !== Constants.AUDIO && type !== Constants.VIDEO) {
+        throw Constants.BAD_ARGUMENT_ERROR;
+    }
+}
 //# sourceMappingURL=SupervisorTools.js.map

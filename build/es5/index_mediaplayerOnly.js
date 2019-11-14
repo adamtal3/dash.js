@@ -27,6 +27,26 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- */import MediaPlayer from'./src/streaming/MediaPlayer';import FactoryMaker from'./src/core/FactoryMaker';import Debug from'./src/core/Debug';import{getVersionString}from'./src/core/Version';// Shove both of these into the global scope
-var context=typeof window!=='undefined'&&window||global;var dashjs=context.dashjs;if(!dashjs){dashjs=context.dashjs={};}dashjs.MediaPlayer=MediaPlayer;dashjs.FactoryMaker=FactoryMaker;dashjs.Debug=Debug;dashjs.Version=getVersionString();export default dashjs;export{MediaPlayer,FactoryMaker,Debug};
+ */
+
+import MediaPlayer from './src/streaming/MediaPlayer';
+import FactoryMaker from './src/core/FactoryMaker';
+import Debug from './src/core/Debug';
+import { getVersionString } from './src/core/Version';
+
+// Shove both of these into the global scope
+var context = typeof window !== 'undefined' && window || global;
+
+var dashjs = context.dashjs;
+if (!dashjs) {
+  dashjs = context.dashjs = {};
+}
+
+dashjs.MediaPlayer = MediaPlayer;
+dashjs.FactoryMaker = FactoryMaker;
+dashjs.Debug = Debug;
+dashjs.Version = getVersionString();
+
+export default dashjs;
+export { MediaPlayer, FactoryMaker, Debug };
 //# sourceMappingURL=index_mediaplayerOnly.js.map

@@ -27,8 +27,26 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @classdesc a base type for matching and converting types in manifest to
  * something more useful
- */class BaseMatcher{constructor(test,converter){this._test=test;this._converter=converter;}get test(){return this._test;}get converter(){return this._converter;}}export default BaseMatcher;
+ */
+
+class BaseMatcher {
+    constructor(test, converter) {
+        this._test = test;
+        this._converter = converter;
+    }
+
+    get test() {
+        return this._test;
+    }
+
+    get converter() {
+        return this._converter;
+    }
+}
+
+export default BaseMatcher;
 //# sourceMappingURL=BaseMatcher.js.map

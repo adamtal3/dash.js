@@ -27,7 +27,27 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- *//**
+ */
+/**
  * @classdesc a property belonging to a MapNode
- */class CommonProperty{constructor(name){const getDefaultMergeForName=n=>n&&n.length&&n.charAt(0)===n.charAt(0).toUpperCase();this._name=name;this._merge=getDefaultMergeForName(name);}get name(){return this._name;}get merge(){return this._merge;}}export default CommonProperty;
+ */
+
+class CommonProperty {
+    constructor(name) {
+        const getDefaultMergeForName = n => n && n.length && n.charAt(0) === n.charAt(0).toUpperCase();
+
+        this._name = name;
+        this._merge = getDefaultMergeForName(name);
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    get merge() {
+        return this._merge;
+    }
+}
+
+export default CommonProperty;
 //# sourceMappingURL=CommonProperty.js.map
